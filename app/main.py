@@ -17,9 +17,19 @@ from pathlib import Path
 import secrets
 import string
 
-from .database import engine, Base, get_db
+
+from .database import (
+    engine,
+    Base,
+    get_db
+)
+
 from . import models
 
+
+# ============================================================
+# APP
+# ============================================================
 
 app = FastAPI(
     title="LiveConnect"
@@ -32,7 +42,7 @@ Base.metadata.create_all(
 
 
 # ============================================================
-# FRONTEND FILE LOCATION
+# FRONTEND PATH
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -40,24 +50,24 @@ BASE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = BASE_DIR.parent
 
 
-def get_frontend_file(filename: str):
+def get_frontend_file(
+    filename: str
+):
 
     possible_paths = [
 
-        # Frontend inside app folder
         BASE_DIR / "frontend" / filename,
 
-        # Frontend beside app folder
         PROJECT_DIR / "frontend" / filename
 
     ]
 
 
-    for file_path in possible_paths:
+    for path in possible_paths:
 
-        if file_path.exists():
+        if path.exists():
 
-            return file_path
+            return path
 
 
     raise FileNotFoundError(
@@ -66,7 +76,7 @@ def get_frontend_file(filename: str):
 
 
 # ============================================================
-# WEBSOCKET CONNECTION MANAGER
+# CONNECTION MANAGER
 # ============================================================
 
 class ConnectionManager:
@@ -98,15 +108,9 @@ class ConnectionManager:
 
 
         print(
-            "WEBSOCKET CONNECTED:",
-            webinar_id,
-            "CONNECTIONS:",
-            len(
-                self.connections.get(
-                    webinar_id,
-                    []
-                )
-            )
+            f"WEBSOCKET CONNECTED: {webinar_id} "
+            f"CONNECTIONS: "
+            f"{len(self.connections[webinar_id])}"
         )
 
 
@@ -116,30 +120,27 @@ class ConnectionManager:
         webinar_id: int
     ):
 
-        if webinar_id in self.connections:
+        if webinar_id not in self.connections:
 
-            if websocket in self.connections[webinar_id]:
-
-                self.connections[webinar_id].remove(
-                    websocket
-                )
+            return
 
 
-            if not self.connections[webinar_id]:
+        if websocket in self.connections[webinar_id]:
 
-                del self.connections[webinar_id]
+            self.connections[webinar_id].remove(
+                websocket
+            )
+
+
+        if not self.connections[webinar_id]:
+
+            del self.connections[webinar_id]
 
 
         print(
-            "WEBSOCKET DISCONNECTED:",
-            webinar_id,
-            "CONNECTIONS:",
-            len(
-                self.connections.get(
-                    webinar_id,
-                    []
-                )
-            )
+            f"WEBSOCKET DISCONNECTED: {webinar_id} "
+            f"CONNECTIONS: "
+            f"{len(self.connections.get(webinar_id, []))}"
         )
 
 
@@ -151,22 +152,10 @@ class ConnectionManager:
 
         if webinar_id not in self.connections:
 
-            print(
-                "NO CONNECTIONS FOR WEBINAR:",
-                webinar_id
-            )
-
             return
 
 
-        print(
-            "BROADCASTING TO:",
-            webinar_id,
-            "CONNECTIONS:",
-            len(
-                self.connections[webinar_id]
-            )
-        )
+        dead_connections = []
 
 
         for websocket in list(
@@ -181,10 +170,37 @@ class ConnectionManager:
 
             except Exception:
 
-                self.disconnect(
-                    websocket,
-                    webinar_id
+                dead_connections.append(
+                    websocket
                 )
+
+
+        for websocket in dead_connections:
+
+            self.disconnect(
+                websocket,
+                webinar_id
+            )
+
+
+    async def send_to(
+        self,
+        websocket: WebSocket,
+        message: dict
+    ):
+
+        try:
+
+            await websocket.send_json(
+                message
+            )
+
+        except Exception as error:
+
+            print(
+                "WEBSOCKET SEND ERROR:",
+                error
+            )
 
 
 manager = ConnectionManager()
@@ -219,13 +235,174 @@ async def websocket_endpoint(
         webinar_id
     )
 
-
     try:
 
         while True:
 
-            await websocket.receive_text()
+            data = await websocket.receive_json()
 
+            message_type = data.get(
+                "type"
+            )
+
+            # =================================================
+            # WEBRTC / REAL-TIME SIGNALING
+            # =================================================
+
+            if message_type == "webrtc_ready":
+
+                role = data.get("role")
+
+                # -------------------------------------------------
+                # PARTICIPANT READY
+                # -------------------------------------------------
+                # When a participant's WebSocket is actually ready,
+                # send that participant the current roster. Then
+                # announce the ready participant to everyone.
+                #
+                # This is deliberately done here rather than only
+                # in /webinars/join because /join happens before the
+                # participant's WebSocket is connected.
+                # -------------------------------------------------
+
+                if role == "participant":
+
+                    participant_id = data.get(
+                        "participant_id"
+                    )
+
+                    db = next(
+                        get_db()
+                    )
+
+                    try:
+
+                        participant = (
+                            db.query(
+                                models.Participant
+                            )
+                            .filter(
+                                models.Participant.id
+                                ==
+                                participant_id,
+
+                                models.Participant.webinar_id
+                                ==
+                                webinar_id
+                            )
+                            .first()
+                        )
+
+                        if participant:
+
+                            existing_participants = (
+                                db.query(
+                                    models.Participant
+                                )
+                                .filter(
+                                    models.Participant.webinar_id
+                                    ==
+                                    webinar_id,
+
+                                    models.Participant.id
+                                    !=
+                                    participant_id
+                                )
+                                .all()
+                            )
+
+                            await manager.send_to(
+                                websocket,
+                                {
+                                    "type":
+                                        "participant_roster",
+
+                                    "participants":
+                                        [
+                                            {
+                                                "participant_id":
+                                                    item.id,
+
+                                                "participant_name":
+                                                    item.name
+                                            }
+
+                                            for item
+                                            in existing_participants
+                                        ]
+                                }
+                            )
+
+                            await manager.broadcast(
+                                webinar_id,
+                                {
+                                    "type":
+                                        "participant_ready",
+
+                                    "role":
+                                        "participant",
+
+                                    "participant_id":
+                                        participant.id,
+
+                                    "participant_name":
+                                        participant.name
+                                }
+                            )
+
+                    finally:
+
+                        db.close()
+
+                continue
+
+            # -------------------------------------------------
+            # ALL WEBRTC SIGNALING
+            # -------------------------------------------------
+            #
+            # We broadcast signaling messages to the room.
+            # Each browser filters messages using the target IDs.
+            #
+            # This allows:
+            #
+            # HOST <-> PARTICIPANT
+            #
+            # and
+            #
+            # PARTICIPANT <-> PARTICIPANT
+            #
+            # simultaneously.
+            # -------------------------------------------------
+
+            if message_type in [
+
+                "webrtc_offer",
+
+                "webrtc_answer",
+
+                "webrtc_ice"
+
+            ]:
+
+                await manager.broadcast(
+                    webinar_id,
+                    data
+                )
+
+                continue
+
+            # -------------------------------------------------
+            # HOST CHAT THROUGH WEBSOCKET
+            # -------------------------------------------------
+
+            if message_type == "chat_message":
+
+                await manager.broadcast(
+                    webinar_id,
+                    data
+                )
+
+                continue
 
     except WebSocketDisconnect:
 
@@ -234,6 +411,17 @@ async def websocket_endpoint(
             webinar_id
         )
 
+    except Exception as error:
+
+        print(
+            "WEBSOCKET ERROR:",
+            error
+        )
+
+        manager.disconnect(
+            websocket,
+            webinar_id
+        )
 
 # ============================================================
 # GENERATE JOIN CODE
@@ -243,13 +431,19 @@ def generate_join_code():
 
     characters = (
         string.ascii_uppercase
-        + string.digits
+        +
+        string.digits
     )
 
 
     return "".join(
-        secrets.choice(characters)
+
+        secrets.choice(
+            characters
+        )
+
         for _ in range(6)
+
     )
 
 
@@ -298,6 +492,8 @@ def create_webinar(
 
 
     return {
+
+        "success": True,
 
         "message":
             "Webinar created successfully!",
@@ -349,8 +545,11 @@ async def join_webinar(
         )
 
         .filter(
+
             models.Webinar.join_code
-            == join_code
+            ==
+            join_code
+
         )
 
         .first()
@@ -362,8 +561,7 @@ async def join_webinar(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Invalid webinar code."
@@ -371,125 +569,21 @@ async def join_webinar(
         }
 
 
-    # --------------------------------------------------------
-    # CHECK EXISTING PARTICIPANT
-    # --------------------------------------------------------
-
-    existing_participant = (
-
-        db.query(
-            models.Participant
-        )
-
-        .filter(
-
-            models.Participant.name
-            == name,
-
-            models.Participant.webinar_id
-            == webinar.id
-
-        )
-
-        .first()
-
-    )
-
-
-    # ========================================================
-    # EXISTING PARTICIPANT
-    # ========================================================
-
-    if existing_participant:
-
-        participant_count = (
-
-            db.query(
-                models.Participant
-            )
-
-            .filter(
-
-                models.Participant.webinar_id
-                == webinar.id
-
-            )
-
-            .count()
-
-        )
-
-
-        print(
-            "PARTICIPANT ALREADY EXISTS:",
-            webinar.id,
-            existing_participant.name,
-            participant_count
-        )
-
-
-        # IMPORTANT:
-        # Broadcast the participant name even when the
-        # participant already exists in the database.
-
-        await manager.broadcast(
-
-            webinar.id,
-
-            {
-
-                "type":
-                    "participant_joined",
-
-                "participant_id":
-                    existing_participant.id,
-
-                "participant_name":
-                    existing_participant.name,
-
-                "participant_count":
-                    participant_count
-
-            }
-
-        )
-
+    if getattr(
+        webinar,
+        "status",
+        "live"
+    ) != "live":
 
         return {
 
-            "success":
-                True,
+            "success": False,
 
             "message":
-                "Already joined this webinar.",
-
-            "participant_id":
-                existing_participant.id,
-
-            "participant_name":
-                existing_participant.name,
-
-            "webinar_id":
-                webinar.id,
-
-            "webinar_title":
-                webinar.title,
-
-            "join_code":
-                webinar.join_code,
-
-            "participant_count":
-                participant_count,
-
-            "already_joined":
-                True
+                "This webinar has ended."
 
         }
 
-
-    # ========================================================
-    # NEW PARTICIPANT
-    # ========================================================
 
     participant = models.Participant(
 
@@ -522,26 +616,13 @@ async def join_webinar(
         .filter(
 
             models.Participant.webinar_id
-            == webinar.id
+            ==
+            webinar.id
 
         )
 
         .count()
 
-    )
-
-
-    print(
-        "BROADCASTING PARTICIPANT JOIN:",
-        webinar.id,
-        participant.name,
-        participant_count,
-        len(
-            manager.connections.get(
-                webinar.id,
-                []
-            )
-        )
     )
 
 
@@ -570,8 +651,7 @@ async def join_webinar(
 
     return {
 
-        "success":
-            True,
+        "success": True,
 
         "message":
             "Successfully joined the webinar!",
@@ -592,16 +672,13 @@ async def join_webinar(
             webinar.join_code,
 
         "participant_count":
-            participant_count,
-
-        "already_joined":
-            False
+            participant_count
 
     }
 
 
 # ============================================================
-# SEND REACTION
+# REACTION
 # ============================================================
 
 @app.post(
@@ -628,10 +705,12 @@ async def send_reaction(
         .filter(
 
             models.Participant.id
-            == participant_id,
+            ==
+            participant_id,
 
             models.Participant.webinar_id
-            == webinar_id
+            ==
+            webinar_id
 
         )
 
@@ -644,11 +723,10 @@ async def send_reaction(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
-                "Participant not found in this webinar."
+                "Participant not found."
 
         }
 
@@ -656,8 +734,11 @@ async def send_reaction(
     allowed_reactions = [
 
         "👍",
+
         "👏",
+
         "❤️",
+
         "🔥"
 
     ]
@@ -667,8 +748,7 @@ async def send_reaction(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Invalid reaction."
@@ -698,11 +778,6 @@ async def send_reaction(
     db.commit()
 
 
-    db.refresh(
-        new_reaction
-    )
-
-
     await manager.broadcast(
 
         webinar_id,
@@ -728,20 +803,16 @@ async def send_reaction(
 
     return {
 
-        "success":
-            True,
+        "success": True,
 
         "message":
-            "Reaction recorded!",
-
-        "reaction":
-            reaction
+            "Reaction recorded."
 
     }
 
 
 # ============================================================
-# SEND CHAT MESSAGE
+# CHAT
 # ============================================================
 
 @app.post(
@@ -768,10 +839,12 @@ async def send_chat_message(
         .filter(
 
             models.Participant.id
-            == participant_id,
+            ==
+            participant_id,
 
             models.Participant.webinar_id
-            == webinar_id
+            ==
+            webinar_id
 
         )
 
@@ -784,11 +857,10 @@ async def send_chat_message(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
-                "Participant not found in this webinar."
+                "Participant not found."
 
         }
 
@@ -800,8 +872,7 @@ async def send_chat_message(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Message cannot be empty."
@@ -834,11 +905,6 @@ async def send_chat_message(
     db.commit()
 
 
-    db.refresh(
-        new_message
-    )
-
-
     await manager.broadcast(
 
         webinar_id,
@@ -861,65 +927,12 @@ async def send_chat_message(
 
     return {
 
-        "success":
-            True,
+        "success": True,
 
         "message":
-            "Chat message sent!"
+            "Chat message sent."
 
     }
-
-
-# ============================================================
-# HOST PAGE
-# ============================================================
-
-@app.get(
-    "/host"
-)
-def host_page():
-
-    html_file = get_frontend_file(
-        "host.html"
-    )
-
-
-    print(
-        "HOST HTML:",
-        html_file
-    )
-
-
-    return FileResponse(
-        str(html_file),
-        media_type="text/html"
-    )
-
-
-# ============================================================
-# PARTICIPANT PAGE
-# ============================================================
-
-@app.get(
-    "/participant"
-)
-def participant_page():
-
-    html_file = get_frontend_file(
-        "participant.html"
-    )
-
-
-    print(
-        "PARTICIPANT HTML:",
-        html_file
-    )
-
-
-    return FileResponse(
-        str(html_file),
-        media_type="text/html"
-    )
 
 
 # ============================================================
@@ -958,7 +971,8 @@ async def create_poll(
 
         .filter(
             models.Webinar.id
-            == webinar_id
+            ==
+            webinar_id
         )
 
         .first()
@@ -970,11 +984,48 @@ async def create_poll(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Webinar not found."
+
+        }
+
+
+    question = poll.question.strip()
+
+
+    options = [
+
+        option.strip()
+
+        for option in poll.options
+
+        if option.strip()
+
+    ]
+
+
+    if not question:
+
+        return {
+
+            "success": False,
+
+            "message":
+                "Poll question is required."
+
+        }
+
+
+    if len(options) < 2:
+
+        return {
+
+            "success": False,
+
+            "message":
+                "At least two options are required."
 
         }
 
@@ -985,7 +1036,7 @@ async def create_poll(
             webinar_id,
 
         question=
-            poll.question
+            question
 
     )
 
@@ -1006,7 +1057,7 @@ async def create_poll(
     created_options = []
 
 
-    for option in poll.options:
+    for option_text in options:
 
         new_option = models.PollOption(
 
@@ -1014,7 +1065,7 @@ async def create_poll(
                 new_poll.id,
 
             option_text=
-                option
+                option_text
 
         )
 
@@ -1032,19 +1083,15 @@ async def create_poll(
         )
 
 
-        created_options.append(
+        created_options.append({
 
-            {
+            "id":
+                new_option.id,
 
-                "id":
-                    new_option.id,
+            "option_text":
+                new_option.option_text
 
-                "option_text":
-                    new_option.option_text
-
-            }
-
-        )
+        })
 
 
     await manager.broadcast(
@@ -1072,11 +1119,7 @@ async def create_poll(
 
     return {
 
-        "success":
-            True,
-
-        "message":
-            "Poll created successfully!",
+        "success": True,
 
         "poll_id":
             new_poll.id,
@@ -1091,7 +1134,7 @@ async def create_poll(
 
 
 # ============================================================
-# VOTE IN POLL
+# VOTE
 # ============================================================
 
 @app.post(
@@ -1117,7 +1160,8 @@ async def vote_poll(
 
         .filter(
             models.Poll.id
-            == poll_id
+            ==
+            poll_id
         )
 
         .first()
@@ -1129,8 +1173,7 @@ async def vote_poll(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Poll not found."
@@ -1147,10 +1190,12 @@ async def vote_poll(
         .filter(
 
             models.Participant.id
-            == participant_id,
+            ==
+            participant_id,
 
             models.Participant.webinar_id
-            == poll.webinar_id
+            ==
+            poll.webinar_id
 
         )
 
@@ -1163,8 +1208,7 @@ async def vote_poll(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Participant not found."
@@ -1181,10 +1225,12 @@ async def vote_poll(
         .filter(
 
             models.PollOption.id
-            == option_id,
+            ==
+            option_id,
 
             models.PollOption.poll_id
-            == poll_id
+            ==
+            poll_id
 
         )
 
@@ -1197,11 +1243,10 @@ async def vote_poll(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
-                "Poll option not found."
+                "Invalid poll option."
 
         }
 
@@ -1215,10 +1260,12 @@ async def vote_poll(
         .filter(
 
             models.PollVote.poll_id
-            == poll_id,
+            ==
+            poll_id,
 
             models.PollVote.participant_id
-            == participant_id
+            ==
+            participant_id
 
         )
 
@@ -1231,8 +1278,7 @@ async def vote_poll(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "You have already voted."
@@ -1271,10 +1317,12 @@ async def vote_poll(
         .filter(
 
             models.PollVote.poll_id
-            == poll_id,
+            ==
+            poll_id,
 
             models.PollVote.option_id
-            == option_id
+            ==
+            option_id
 
         )
 
@@ -1311,17 +1359,10 @@ async def vote_poll(
 
     return {
 
-        "success":
-            True,
+        "success": True,
 
         "message":
-            "Vote recorded!",
-
-        "poll_id":
-            poll_id,
-
-        "option_id":
-            option_id,
+            "Vote recorded.",
 
         "vote_count":
             vote_count
@@ -1330,7 +1371,7 @@ async def vote_poll(
 
 
 # ============================================================
-# ASK QUESTION
+# QUESTION
 # ============================================================
 
 @app.post(
@@ -1357,10 +1398,12 @@ async def ask_question(
         .filter(
 
             models.Participant.id
-            == participant_id,
+            ==
+            participant_id,
 
             models.Participant.webinar_id
-            == webinar_id
+            ==
+            webinar_id
 
         )
 
@@ -1373,8 +1416,7 @@ async def ask_question(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Participant not found."
@@ -1389,8 +1431,7 @@ async def ask_question(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Question cannot be empty."
@@ -1453,11 +1494,10 @@ async def ask_question(
 
     return {
 
-        "success":
-            True,
+        "success": True,
 
         "message":
-            "Question submitted!",
+            "Question submitted.",
 
         "question_id":
             new_question.id
@@ -1487,8 +1527,11 @@ async def answer_question(
         )
 
         .filter(
+
             models.Question.id
-            == question_id
+            ==
+            question_id
+
         )
 
         .first()
@@ -1500,8 +1543,7 @@ async def answer_question(
 
         return {
 
-            "success":
-                False,
+            "success": False,
 
             "message":
                 "Question not found."
@@ -1534,148 +1576,10 @@ async def answer_question(
 
     return {
 
-        "success":
-            True,
+        "success": True,
 
         "message":
-            "Question marked as answered!",
-
-        "question_id":
-            question_id
-
-    }
-
-
-# ============================================================
-# ANALYTICS
-# ============================================================
-
-@app.get(
-    "/webinars/{webinar_id}/analytics"
-)
-def get_webinar_analytics(
-
-    webinar_id: int,
-
-    db: Session = Depends(get_db)
-
-):
-
-    participant_count = (
-
-        db.query(
-            models.Participant
-        )
-
-        .filter(
-            models.Participant.webinar_id
-            == webinar_id
-        )
-
-        .count()
-
-    )
-
-
-    message_count = (
-
-        db.query(
-            models.Message
-        )
-
-        .filter(
-            models.Message.webinar_id
-            == webinar_id
-        )
-
-        .count()
-
-    )
-
-
-    question_count = (
-
-        db.query(
-            models.Question
-        )
-
-        .filter(
-            models.Question.webinar_id
-            == webinar_id
-        )
-
-        .count()
-
-    )
-
-
-    poll_response_count = (
-
-        db.query(
-            models.PollVote
-        )
-
-        .join(
-
-            models.Poll,
-
-            models.PollVote.poll_id
-            == models.Poll.id
-
-        )
-
-        .filter(
-
-            models.Poll.webinar_id
-            == webinar_id
-
-        )
-
-        .count()
-
-    )
-
-
-    reaction_count = (
-
-        db.query(
-            models.Reaction
-        )
-
-        .filter(
-
-            models.Reaction.webinar_id
-            == webinar_id
-
-        )
-
-        .count()
-
-    )
-
-
-    return {
-
-        "webinar_id":
-            webinar_id,
-
-        "participants":
-            participant_count,
-
-        "peak_participants":
-            participant_count,
-
-        "messages":
-            message_count,
-
-        "questions":
-            question_count,
-
-        "poll_responses":
-            poll_response_count,
-
-        "reactions":
-            reaction_count
+            "Question marked as answered."
 
     }
 
@@ -1687,7 +1591,7 @@ def get_webinar_analytics(
 @app.get(
     "/webinars/{webinar_id}/poll-results"
 )
-def get_poll_results(
+def poll_results(
 
     webinar_id: int,
 
@@ -1702,8 +1606,11 @@ def get_poll_results(
         )
 
         .filter(
+
             models.Poll.webinar_id
-            == webinar_id
+            ==
+            webinar_id
+
         )
 
         .all()
@@ -1711,11 +1618,10 @@ def get_poll_results(
     )
 
 
-    poll_results = []
+    results = []
 
 
     for poll in polls:
-
 
         options = (
 
@@ -1726,7 +1632,8 @@ def get_poll_results(
             .filter(
 
                 models.PollOption.poll_id
-                == poll.id
+                ==
+                poll.id
 
             )
 
@@ -1740,8 +1647,7 @@ def get_poll_results(
 
         for option in options:
 
-
-            vote_count = (
+            votes = (
 
                 db.query(
                     models.PollVote
@@ -1750,10 +1656,12 @@ def get_poll_results(
                 .filter(
 
                     models.PollVote.poll_id
-                    == poll.id,
+                    ==
+                    poll.id,
 
                     models.PollVote.option_id
-                    == option.id
+                    ==
+                    option.id
 
                 )
 
@@ -1762,40 +1670,147 @@ def get_poll_results(
             )
 
 
-            option_results.append(
+            option_results.append({
 
-                {
+                "id":
+                    option.id,
 
-                    "id":
-                        option.id,
+                "option":
+                    option.option_text,
 
-                    "option":
-                        option.option_text,
+                "votes":
+                    votes
 
-                    "votes":
-                        vote_count
-
-                }
-
-            )
+            })
 
 
-        poll_results.append(
+        results.append({
 
-            {
+            "poll_id":
+                poll.id,
 
-                "poll_id":
-                    poll.id,
+            "question":
+                poll.question,
 
-                "question":
-                    poll.question,
+            "options":
+                option_results
 
-                "options":
-                    option_results
+        })
 
-            }
 
+    return {
+
+        "polls":
+            results
+
+    }
+
+
+# ============================================================
+# ANALYTICS
+# ============================================================
+
+@app.get(
+    "/webinars/{webinar_id}/analytics"
+)
+def analytics(
+
+    webinar_id: int,
+
+    db: Session = Depends(get_db)
+
+):
+
+    participants = (
+
+        db.query(
+            models.Participant
         )
+
+        .filter(
+            models.Participant.webinar_id
+            ==
+            webinar_id
+        )
+
+        .count()
+
+    )
+
+
+    messages = (
+
+        db.query(
+            models.Message
+        )
+
+        .filter(
+            models.Message.webinar_id
+            ==
+            webinar_id
+        )
+
+        .count()
+
+    )
+
+
+    questions = (
+
+        db.query(
+            models.Question
+        )
+
+        .filter(
+            models.Question.webinar_id
+            ==
+            webinar_id
+        )
+
+        .count()
+
+    )
+
+
+    reactions = (
+
+        db.query(
+            models.Reaction
+        )
+
+        .filter(
+            models.Reaction.webinar_id
+            ==
+            webinar_id
+        )
+
+        .count()
+
+    )
+
+
+    poll_votes = (
+
+        db.query(
+            models.PollVote
+        )
+
+        .join(
+            models.Poll,
+            models.PollVote.poll_id
+            ==
+            models.Poll.id
+        )
+
+        .filter(
+            models.Poll.webinar_id
+            ==
+            webinar_id
+        )
+
+        .count()
+
+    )
 
 
     return {
@@ -1803,10 +1818,129 @@ def get_poll_results(
         "webinar_id":
             webinar_id,
 
-        "polls":
-            poll_results
+        "participants":
+            participants,
+
+        "peak_participants":
+            participants,
+
+        "messages":
+            messages,
+
+        "questions":
+            questions,
+
+        "reactions":
+            reactions,
+
+        "poll_responses":
+            poll_votes
 
     }
+
+
+# ============================================================
+# END WEBINAR
+# ============================================================
+
+@app.post(
+    "/webinars/{webinar_id}/end"
+)
+def end_webinar(
+
+    webinar_id: int,
+
+    db: Session = Depends(get_db)
+
+):
+
+    webinar = (
+
+        db.query(
+            models.Webinar
+        )
+
+        .filter(
+            models.Webinar.id
+            ==
+            webinar_id
+        )
+
+        .first()
+
+    )
+
+
+    if not webinar:
+
+        return {
+
+            "success": False,
+
+            "message":
+                "Webinar not found."
+
+        }
+
+
+    webinar.status = "ended"
+
+
+    db.commit()
+
+
+    return {
+
+        "success": True,
+
+        "message":
+            "Webinar ended."
+
+    }
+
+
+# ============================================================
+# HOST PAGE
+# ============================================================
+
+@app.get(
+    "/host"
+)
+def host_page():
+
+    return FileResponse(
+
+        str(
+            get_frontend_file(
+                "host.html"
+            )
+        ),
+
+        media_type="text/html"
+
+    )
+
+
+# ============================================================
+# PARTICIPANT PAGE
+# ============================================================
+
+@app.get(
+    "/participant"
+)
+def participant_page():
+
+    return FileResponse(
+
+        str(
+            get_frontend_file(
+                "participant.html"
+            )
+        ),
+
+        media_type="text/html"
+
+    )
 
 
 # ============================================================
@@ -1818,18 +1952,14 @@ def get_poll_results(
 )
 def analytics_page():
 
-    html_file = get_frontend_file(
-        "analytics.html"
-    )
-
-
-    print(
-        "ANALYTICS HTML:",
-        html_file
-    )
-
-
     return FileResponse(
-        str(html_file),
+
+        str(
+            get_frontend_file(
+                "analytics.html"
+            )
+        ),
+
         media_type="text/html"
+
     )
