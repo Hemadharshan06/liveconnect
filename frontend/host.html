@@ -1,1444 +1,3511 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-    <title>LiveConnect Host</title>
+<meta charset="UTF-8">
 
-    <style>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #f4f6f8;
-        }
+<title>LiveConnect - Host</title>
 
-        h1 {
-            text-align: center;
-        }
 
-        .start-section {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
 
-        input {
-            padding: 12px;
-            width: 280px;
-            margin: 6px;
-            font-size: 15px;
-            box-sizing: border-box;
-        }
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    rel="stylesheet"
+>
 
-        button {
-            padding: 10px 18px;
-            margin: 5px;
-            font-size: 15px;
-            cursor: pointer;
-        }
 
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+<style>
 
-        #hostSection {
-            display: none;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .status {
-            text-align: center;
-            margin: 20px;
-            font-weight: bold;
-        }
 
-        .webinar-info {
-            background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+html,
+body {
 
-        .join-code {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            margin: 10px;
-        }
+    width: 100%;
+    height: 100%;
 
-        .participant-count {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    margin: 0;
 
-        .section {
-            background: white;
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+    overflow: hidden;
 
-        .reaction-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+    font-family:
+        Arial,
+        sans-serif;
 
-        .reaction-box {
-            text-align: center;
-            min-width: 90px;
-            padding: 15px;
-        }
+    background: #111827;
+}
 
-        .emoji {
-            font-size: 35px;
-        }
 
-        .count {
-            font-size: 25px;
-            font-weight: bold;
-        }
+#startSection {
 
-        .activity-item {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
+    height: 100vh;
 
-        .poll-result {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
+    display: flex;
 
-        .question-item {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
+    align-items: center;
 
-        .participant-item {
-            padding: 12px;
-            margin: 8px 0;
-            background: #f4f6f8;
-            border-radius: 8px;
-            font-size: 17px;
-            font-weight: bold;
-        }
+    justify-content: center;
 
-        .empty-participants {
-            color: #777;
-            text-align: center;
-            padding: 10px;
-        }
+    padding: 20px;
 
-    </style>
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #1e3a8a
+        );
+}
+
+
+.start-card {
+
+    width: 100%;
+
+    max-width: 440px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 35px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(0,0,0,.3);
+}
+
+
+#hostSection {
+
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+.topbar {
+
+    height: 64px;
+
+    flex-shrink: 0;
+
+    background: #1f2937;
+
+    border-bottom:
+        1px solid #374151;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding:
+        0 18px;
+}
+
+
+.brand {
+
+    font-size: 21px;
+
+    font-weight: bold;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.brand i {
+
+    color: #3b82f6;
+}
+
+
+.header-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.code-box {
+
+    background: #111827;
+
+    border:
+        1px solid #4b5563;
+
+    border-radius: 7px;
+
+    padding:
+        5px 8px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.code {
+
+    color: #60a5fa;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+
+.copy-btn {
+
+    border: none;
+
+    background: #374151;
+
+    color: white;
+
+    border-radius: 4px;
+
+    padding: 3px 7px;
+}
+
+
+.live {
+
+    background: #dc2626;
+
+    color: white;
+
+    padding:
+        8px 11px;
+
+    border-radius: 6px;
+
+    font-weight: bold;
+
+    font-size: 12px;
+}
+
+
+.main {
+
+    flex: 1;
+
+    min-height: 0;
+
+    display: flex;
+
+    gap: 12px;
+
+    padding: 12px;
+
+    overflow: hidden;
+}
+
+
+.video-area {
+
+    flex: 1;
+
+    min-width: 0;
+
+    min-height: 0;
+
+    background: #000;
+
+    border-radius: 10px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                220px,
+                1fr
+            )
+        );
+
+    grid-auto-rows: minmax(
+        160px,
+        1fr
+    );
+
+    gap: 8px;
+
+    padding: 8px;
+}
+
+
+.video-tile {
+
+    position: relative;
+
+    background: #050505;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    min-height: 0;
+}
+
+
+.video-tile video {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.video-name {
+
+    position: absolute;
+
+    left: 8px;
+
+    bottom: 8px;
+
+    background:
+        rgba(0,0,0,.65);
+
+    color: white;
+
+    padding:
+        5px 8px;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+}
+
+
+.floating-reaction {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 100px;
+
+    transform:
+        translateX(-50%);
+
+    font-size: 65px;
+
+    z-index: 100;
+
+    pointer-events: none;
+
+    animation:
+        floatEmoji 2s forwards;
+}
+
+
+/* =====================================================
+   LEAVE NOTIFICATION
+   ===================================================== */
+
+.leave-notification {
+
+    position: fixed;
+
+    top: 78px;
+
+    left: 50%;
+
+    transform: translateX(-50%) translateY(-15px);
+
+    z-index: 9999;
+
+    background: rgba(31, 41, 55, .96);
+
+    color: white;
+
+    border: 1px solid #4b5563;
+
+    border-radius: 10px;
+
+    padding: 10px 16px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+
+    font-size: 13px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+.leave-notification.show {
+
+    opacity: 1;
+
+    transform: translateX(-50%) translateY(0);
+}
+
+@keyframes floatEmoji {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%,20px)
+            scale(.6);
+    }
+
+    15% {
+
+        opacity: 1;
+    }
+
+    75% {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%,-100px)
+            scale(1.1);
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%,-170px)
+            scale(1.3);
+    }
+
+}
+
+
+.side {
+
+    width: 330px;
+
+    flex-shrink: 0;
+
+    min-height: 0;
+
+    background: #1f2937;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    color: white;
+}
+
+
+.tabs {
+
+    height: 48px;
+
+    display: flex;
+
+    border-bottom:
+        1px solid #374151;
+
+    flex-shrink: 0;
+}
+
+
+.tab {
+
+    flex: 1;
+
+    border: none;
+
+    background: transparent;
+
+    color: #9ca3af;
+
+    cursor: pointer;
+}
+
+
+.tab.active {
+
+    color: white;
+
+    border-bottom:
+        2px solid #3b82f6;
+}
+
+
+.panel {
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+
+    padding: 12px;
+}
+
+
+.participant-item {
+
+    background: #374151;
+
+    border-radius: 7px;
+
+    padding: 9px;
+
+    margin-bottom: 7px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-size: 13px;
+}
+
+
+.chat-message {
+
+    margin-bottom: 10px;
+
+    font-size: 13px;
+}
+
+
+.chat-name {
+
+    color: #93c5fd;
+
+    font-weight: bold;
+}
+
+
+.chat-text {
+
+    color: #e5e7eb;
+
+    word-break: break-word;
+}
+
+
+.question {
+
+    background: #374151;
+
+    padding: 10px;
+
+    border-radius: 7px;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+}
+
+
+.question-name {
+
+    color: #93c5fd;
+
+    font-weight: bold;
+}
+
+
+.chat-input {
+
+    border-top:
+        1px solid #374151;
+
+    padding: 8px;
+
+    display: flex;
+
+    gap: 6px;
+}
+
+
+.chat-input input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    background: #111827;
+
+    color: white;
+
+    border:
+        1px solid #4b5563;
+}
+
+
+.controlbar {
+
+    height: 72px;
+
+    flex-shrink: 0;
+
+    background: #1f2937;
+
+    border-top:
+        1px solid #374151;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 8px;
+}
+
+
+.control {
+
+    min-width: 55px;
+
+    height: 50px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #374151;
+
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 11px;
+}
+
+
+.control i {
+
+    font-size: 18px;
+
+    margin-bottom: 2px;
+}
+
+
+.control:hover {
+
+    background: #4b5563;
+}
+
+
+.end {
+
+    background: #dc2626;
+
+    min-width: 85px;
+}
+
+
+.end:hover {
+
+    background: #b91c1c;
+}
+
+
+.modal-content {
+
+    color: #111827;
+}
+
+
+@media(max-width:850px) {
+
+    .side {
+
+        width: 270px;
+    }
+
+}
+
+
+@media(max-width:650px) {
+
+    .side {
+
+        width: 220px;
+    }
+
+    .brand {
+
+        font-size: 17px;
+    }
+
+    .code-box {
+
+        display: none;
+    }
+
+    .control {
+
+        min-width: 45px;
+    }
+
+    .control span {
+
+        display: none;
+    }
+
+}
+
+
+</style>
 
 </head>
 
 
 <body>
 
-
-    <h1>
-        🎥 LiveConnect Host
-    </h1>
+<div id="leaveNotification" class="leave-notification"></div>
 
 
-    <!-- =====================================================
-         START WEBINAR
-         ===================================================== -->
+<!-- =====================================================
+     START
+     ===================================================== -->
 
-    <div
-        id="startSection"
-        class="start-section"
-    >
+<div id="startSection">
 
-        <h2>
+    <div class="start-card">
+
+        <div class="text-center mb-3">
+
+            <i
+                class="bi bi-camera-video-fill text-primary"
+                style="font-size:45px;"
+            ></i>
+
+        </div>
+
+
+        <h3 class="text-center">
+
             Start Webinar
-        </h2>
+
+        </h3>
+
+
+        <p class="text-center text-muted">
+
+            Create your LiveConnect webinar.
+
+        </p>
 
 
         <input
             id="webinarTitleInput"
-            type="text"
+            class="form-control mb-3"
             placeholder="Webinar title"
         >
-
-        <br>
 
 
         <input
             id="hostNameInput"
-            type="text"
+            class="form-control mb-3"
             placeholder="Host name"
         >
-
-        <br>
 
 
         <button
             onclick="startWebinar()"
+            id="startButton"
+            class="btn btn-primary w-100"
         >
+
+            <i class="bi bi-broadcast me-2"></i>
+
             Start Webinar
+
         </button>
 
 
         <div
             id="startMessage"
-            style="margin-top: 15px;"
-        >
-        </div>
+            class="mt-3"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     HOST
+     ===================================================== -->
+
+<div
+    id="hostSection"
+    style="display:none;"
+>
+
+
+<header class="topbar">
+
+
+    <div class="brand">
+
+        <i class="bi bi-camera-video-fill"></i>
+
+        LiveConnect
 
     </div>
 
 
-    <!-- =====================================================
-         HOST SECTION
-         ===================================================== -->
-
-    <div id="hostSection">
+    <div class="header-right">
 
 
-        <h2
-            id="webinarTitle"
-            style="text-align: center;"
-        >
-            Live Webinar
-        </h2>
+        <div class="code-box">
 
+            <small>CODE</small>
 
-        <!-- Webinar Information -->
-
-        <div class="webinar-info">
-
-            <div>
-                Join Code
-            </div>
-
-            <div
-                id="joinCode"
-                class="join-code"
+            <span
+                id="joinCodeDisplay"
+                class="code"
             >
                 ------
+            </span>
+
+
+            <button
+                onclick="copyCode()"
+                class="copy-btn"
+            >
+
+                <i class="bi bi-copy"></i>
+
+            </button>
+
+        </div>
+
+
+        <span class="live">
+
+            ● LIVE
+
+        </span>
+
+
+        <span
+            id="connectionStatus"
+            class="badge bg-warning"
+        >
+
+            Connecting
+
+        </span>
+
+    </div>
+
+</header>
+
+
+<div class="main">
+
+
+    <!-- VIDEO AREA -->
+
+    <section
+        id="videoArea"
+        class="video-area"
+    >
+
+
+        <div
+            id="hostVideoTile"
+            class="video-tile"
+        >
+
+            <video
+                id="localVideo"
+                autoplay
+                muted
+                playsinline
+            ></video>
+
+
+            <div class="video-name">
+
+                <i class="bi bi-person-video3"></i>
+
+                Host
+
             </div>
 
+        </div>
 
-            <div class="participant-count">
 
-                Participants:
+    </section>
 
-                <span id="participantCount">
+
+    <!-- SIDE -->
+
+    <aside class="side">
+
+
+        <div class="tabs">
+
+
+            <button
+                id="peopleTab"
+                class="tab active"
+                onclick="showPanel('people')"
+            >
+
+                <i class="bi bi-people me-1"></i>
+
+                People
+
+            </button>
+
+
+            <button
+                id="chatTab"
+                class="tab"
+                onclick="showPanel('chat')"
+            >
+
+                <i class="bi bi-chat me-1"></i>
+
+                Chat
+
+            </button>
+
+
+            <button
+                id="pollTab"
+                class="tab"
+                onclick="showPanel('poll')"
+            >
+
+                <i class="bi bi-bar-chart me-1"></i>
+
+                Poll
+
+            </button>
+
+
+            <button
+                id="qaTab"
+                class="tab"
+                onclick="showPanel('qa')"
+            >
+
+                <i class="bi bi-question-circle me-1"></i>
+
+                Q&A
+
+            </button>
+
+        </div>
+
+
+        <!-- PEOPLE -->
+
+        <div
+            id="peoplePanel"
+            class="panel"
+        >
+
+            <div class="d-flex justify-content-between mb-3">
+
+                <span class="text-secondary">
+
+                    Participants
+
+                </span>
+
+
+                <span
+                    id="participantCount"
+                    class="badge bg-primary"
+                >
                     0
                 </span>
 
             </div>
 
 
-            <div
-                style="
-                    margin-top: 20px;
-                    font-size: 20px;
-                    font-weight: bold;
-                "
-            >
-                Live Participants
-            </div>
+            <div id="participantList">
 
+                <div
+                    id="emptyParticipants"
+                    class="text-secondary text-center small"
+                >
 
-            <div
-                id="participantList"
-                style="margin-top: 10px;"
-            >
-
-                <div class="empty-participants">
                     Waiting for participants...
+
                 </div>
 
             </div>
 
 
-            <button
-                onclick="startNewWebinar()"
-            >
-                Start New Webinar
-            </button>
+            <hr>
 
 
-            <button
-                onclick="endWebinar()"
-            >
-                End Webinar
-            </button>
+            <div class="text-secondary small mb-2">
 
-        </div>
-
-
-        <!-- WebSocket Status -->
-
-        <div class="status">
-
-            WebSocket:
-
-            <span id="connectionStatus">
-                Connecting...
-            </span>
-
-        </div>
-
-
-        <!-- =================================================
-             REACTIONS
-             ================================================= -->
-
-        <div class="section">
-
-            <h2>
                 Live Reactions
-            </h2>
+
+            </div>
 
 
-            <div class="reaction-buttons">
+            <div id="reactionList">
 
+                <div
+                    id="emptyReactions"
+                    class="text-secondary text-center small"
+                >
 
-                <div class="reaction-box">
-
-                    <div class="emoji">
-                        👍
-                    </div>
-
-                    <div
-                        id="likeCount"
-                        class="count"
-                    >
-                        0
-                    </div>
+                    No reactions yet.
 
                 </div>
-
-
-                <div class="reaction-box">
-
-                    <div class="emoji">
-                        👏
-                    </div>
-
-                    <div
-                        id="clapCount"
-                        class="count"
-                    >
-                        0
-                    </div>
-
-                </div>
-
-
-                <div class="reaction-box">
-
-                    <div class="emoji">
-                        ❤️
-                    </div>
-
-                    <div
-                        id="loveCount"
-                        class="count"
-                    >
-                        0
-                    </div>
-
-                </div>
-
-
-                <div class="reaction-box">
-
-                    <div class="emoji">
-                        🔥
-                    </div>
-
-                    <div
-                        id="fireCount"
-                        class="count"
-                    >
-                        0
-                    </div>
-
-                </div>
-
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             POLL
-             ================================================= -->
+        <!-- CHAT -->
 
-        <div class="section">
+        <div
+            id="chatPanel"
+            class="panel"
+            style="display:none;"
+        >
 
-            <h2>
-                Create Poll
-            </h2>
+            <div id="chatList">
+
+                <div
+                    id="emptyChat"
+                    class="text-secondary text-center small"
+                >
+
+                    Waiting for messages...
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- POLL -->
+
+        <div
+            id="pollPanel"
+            class="panel"
+            style="display:none;"
+        >
+
+
+            <h6>
+
+                Create Live Poll
+
+            </h6>
 
 
             <input
-                id="pollQuestion"
-                type="text"
+                id="pollQuestionInput"
+                class="form-control mb-2"
                 placeholder="Poll question"
             >
-
-            <br>
 
 
             <input
                 id="pollOption1"
-                type="text"
+                class="form-control mb-2"
                 placeholder="Option 1"
             >
-
-            <br>
 
 
             <input
                 id="pollOption2"
-                type="text"
+                class="form-control mb-2"
                 placeholder="Option 2"
             >
-
-            <br>
 
 
             <input
                 id="pollOption3"
-                type="text"
-                placeholder="Option 3"
+                class="form-control mb-2"
+                placeholder="Option 3 (optional)"
             >
-
-            <br>
 
 
             <input
                 id="pollOption4"
-                type="text"
-                placeholder="Option 4"
+                class="form-control mb-2"
+                placeholder="Option 4 (optional)"
             >
-
-            <br>
 
 
             <button
                 onclick="createPoll()"
+                class="btn btn-primary w-100 mb-3"
             >
-                Launch Poll
+
+                <i class="bi bi-bar-chart me-1"></i>
+
+                Create Poll
+
             </button>
 
 
-            <div
-                id="pollMessage"
-                style="margin-top: 10px;"
-            >
-            </div>
+            <hr>
 
 
             <div
                 id="pollResults"
-                style="margin-top: 20px;"
+                class="small"
             >
 
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             CHAT
-             ================================================= -->
-
-        <div class="section">
-
-            <h2>
-                Live Chat
-            </h2>
-
-
-            <div id="chatList">
-
-                Waiting for messages...
+                Poll results will appear here.
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             QUESTIONS
-             ================================================= -->
+        <!-- Q&A -->
 
-        <div class="section">
+        <div
+            id="qaPanel"
+            class="panel"
+            style="display:none;"
+        >
 
-            <h2>
-                Live Questions
-            </h2>
+            <h6>
+
+                Questions from Participants
+
+            </h6>
 
 
             <div id="questionList">
 
-                Waiting for questions...
+                <div
+                    id="emptyQuestions"
+                    class="text-secondary text-center small"
+                >
+
+                    No questions yet.
+
+                </div>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             LIVE ACTIVITY
-             ================================================= -->
+        <!-- CHAT INPUT -->
 
-        <div class="section">
+        <div
+            id="chatInputArea"
+            class="chat-input"
+        >
 
-            <h2>
-                Live Activity
-            </h2>
+            <input
+                id="chatMessage"
+                type="text"
+                placeholder="Type a message..."
+                onkeydown="handleChatKey(event)"
+            >
 
 
-            <div id="activityList">
+            <button
+                onclick="sendChat()"
+                class="btn btn-primary btn-sm"
+            >
 
-                Waiting for activity...
+                <i class="bi bi-send"></i>
 
-            </div>
+            </button>
 
         </div>
 
+    </aside>
 
-    </div>
-
-
-    <script>
+</div>
 
 
-        // =====================================================
-        // Variables
-        // =====================================================
+<!-- CONTROL BAR -->
 
-        let webinarId = null;
-
-        let socket = null;
+<footer class="controlbar">
 
 
-        // =====================================================
-        // Start Webinar
-        // =====================================================
+    <button
+        id="muteButton"
+        class="control"
+        onclick="toggleMute()"
+    >
 
-        async function startWebinar() {
+        <i
+            id="muteIcon"
+            class="bi bi-mic"
+        ></i>
 
+        <span id="muteText">
+            Mute
+        </span>
 
-            const title =
-                document.getElementById(
-                    "webinarTitleInput"
-                ).value.trim();
-
-
-            const hostName =
-                document.getElementById(
-                    "hostNameInput"
-                ).value.trim();
-
-
-            if (
-                !title
-                || !hostName
-            ) {
-
-                document.getElementById(
-                    "startMessage"
-                ).textContent =
-                    "Please enter webinar title and host name.";
-
-                return;
-
-            }
+    </button>
 
 
-            const formData =
-                new FormData();
+    <button
+        id="videoButton"
+        class="control"
+        onclick="toggleCamera()"
+    >
+
+        <i
+            id="cameraIcon"
+            class="bi bi-camera-video"
+        ></i>
+
+        <span id="cameraText">
+            Video
+        </span>
+
+    </button>
 
 
-            formData.append(
-                "title",
-                title
+    <button
+        id="screenButton"
+        class="control"
+        onclick="toggleScreenShare()"
+    >
+
+        <i class="bi bi-display"></i>
+
+        <span>
+            Share
+        </span>
+
+    </button>
+
+
+    <button
+        class="control"
+        onclick="showPanel('people')"
+    >
+
+        <i class="bi bi-people"></i>
+
+        <span>
+            People
+        </span>
+
+    </button>
+
+
+    <button
+        class="control"
+        onclick="showPanel('chat')"
+    >
+
+        <i class="bi bi-chat"></i>
+
+        <span>
+            Chat
+        </span>
+
+    </button>
+
+
+    <button
+        class="control"
+        onclick="showPanel('poll')"
+    >
+
+        <i class="bi bi-bar-chart"></i>
+
+        <span>
+            Poll
+        </span>
+
+    </button>
+
+
+    <button
+        class="control"
+        onclick="showPanel('qa')"
+    >
+
+        <i class="bi bi-question-circle"></i>
+
+        <span>
+            Q&A
+        </span>
+
+    </button>
+
+
+    <button
+        onclick="endWebinar()"
+        class="control end"
+    >
+
+        <i class="bi bi-telephone-x"></i>
+
+        <span>
+            End
+        </span>
+
+    </button>
+
+</footer>
+
+
+</div>
+
+
+<script>
+
+
+
+// =====================================================
+// VARIABLES
+// =====================================================
+
+let webinarId = null;
+
+let webinarJoinCode = null;
+
+let socket = null;
+
+let localStream = null;
+
+let screenStream = null;
+
+let peerConnections = {};
+
+let participantNames = {};
+
+let cameraEnabled = true;
+
+let microphoneEnabled = true;
+
+
+const rtcConfiguration = {
+
+    iceServers: [
+
+        {
+            urls:
+                "stun:stun.l.google.com:19302"
+        }
+
+    ]
+
+};
+
+
+// =====================================================
+// START WEBINAR
+// =====================================================
+
+async function startWebinar() {
+
+
+    const title =
+        document
+            .getElementById(
+                "webinarTitleInput"
+            )
+            .value.trim();
+
+
+    const hostName =
+        document
+            .getElementById(
+                "hostNameInput"
+            )
+            .value.trim();
+
+
+    if (
+        !title ||
+        !hostName
+    ) {
+
+        document
+            .getElementById(
+                "startMessage"
+            )
+            .innerHTML =
+            `<div class="alert alert-warning">
+                Enter title and host name.
+            </div>`;
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "startButton"
+        );
+
+
+    button.disabled = true;
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "title",
+        title
+    );
+
+
+    formData.append(
+        "host_name",
+        hostName
+    );
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/webinars",
+                {
+                    method:
+                        "POST",
+
+                    body:
+                        formData
+                }
             );
 
 
-            formData.append(
-                "host_name",
-                hostName
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to create webinar."
             );
 
+        }
 
-            const response =
-                await fetch(
-                    "/webinars",
-                    {
-                        method: "POST",
-                        body: formData
-                    }
+
+        webinarId =
+            data.webinar_id;
+
+
+        webinarJoinCode =
+            data.join_code;
+
+
+        document
+            .getElementById(
+                "joinCodeDisplay"
+            )
+            .textContent =
+            webinarJoinCode;
+
+
+        document
+            .getElementById(
+                "startSection"
+            )
+            .style.display =
+            "none";
+
+
+        document
+            .getElementById(
+                "hostSection"
+            )
+            .style.display =
+            "flex";
+
+
+        await startCamera();
+
+
+        connectWebSocket();
+
+
+    }
+
+    catch (error) {
+
+        button.disabled = false;
+
+
+        document
+            .getElementById(
+                "startMessage"
+            )
+            .innerHTML =
+            `<div class="alert alert-danger">
+                ${escapeHtml(error.message)}
+            </div>`;
+
+    }
+
+}
+
+
+// =====================================================
+// CAMERA + MICROPHONE
+// =====================================================
+
+async function startCamera() {
+
+
+    localStream =
+        await navigator.mediaDevices.getUserMedia({
+
+            video: true,
+
+            audio: true
+
+        });
+
+
+    document
+        .getElementById(
+            "localVideo"
+        )
+        .srcObject =
+        localStream;
+
+}
+
+
+function connectWebSocket() {
+
+    const protocol =
+        location.protocol === "https:"
+            ? "wss:"
+            : "ws:";
+
+    socket =
+        new WebSocket(
+            `${protocol}//${location.host}/ws/${webinarId}`
+        );
+
+    socket.onopen =
+        function() {
+
+            const status =
+                document.getElementById(
+                    "connectionStatus"
                 );
 
+            status.className =
+                "badge bg-success";
+
+            status.textContent =
+                "Connected 🟢";
+
+        };
+
+    socket.onclose =
+        function() {
+
+            const status =
+                document.getElementById(
+                    "connectionStatus"
+                );
+
+            status.className =
+                "badge bg-danger";
+
+            status.textContent =
+                "Disconnected 🔴";
+
+        };
+
+    socket.onerror =
+        function(error) {
+
+            console.error(
+                "WebSocket:",
+                error
+            );
+
+        };
+
+    socket.onmessage =
+        async function(event) {
 
             const data =
-                await response.json();
-
-
-            if (
-                !data.webinar_id
-            ) {
-
-                document.getElementById(
-                    "startMessage"
-                ).textContent =
-                    "Unable to start webinar.";
-
-                return;
-
-            }
-
-
-            webinarId =
-                data.webinar_id;
-
-
-            localStorage.setItem(
-                "liveconnect_webinar_id",
-                webinarId
-            );
-
-
-            localStorage.setItem(
-                "liveconnect_webinar_title",
-                data.title
-            );
-
-
-            localStorage.setItem(
-                "liveconnect_join_code",
-                data.join_code
-            );
-
-
-            document.getElementById(
-                "webinarTitle"
-            ).textContent =
-                data.title;
-
-
-            document.getElementById(
-                "joinCode"
-            ).textContent =
-                data.join_code;
-
-
-            document.getElementById(
-                "participantCount"
-            ).textContent =
-                "0";
-
-
-            document.getElementById(
-                "participantList"
-            ).innerHTML =
-                `
-                <div class="empty-participants">
-                    Waiting for participants...
-                </div>
-                `;
-
-
-            document.getElementById(
-                "startSection"
-            ).style.display =
-                "none";
-
-
-            document.getElementById(
-                "hostSection"
-            ).style.display =
-                "block";
-
-
-            connectWebSocket();
-
-        }
-
-
-        // =====================================================
-        // WebSocket
-        // =====================================================
-
-        function connectWebSocket() {
-
-
-            if (
-                webinarId === null
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                socket
-                && (
-                    socket.readyState
-                    === WebSocket.OPEN
-                    ||
-                    socket.readyState
-                    === WebSocket.CONNECTING
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            const protocol =
-                window.location.protocol
-                === "https:"
-                    ? "wss:"
-                    : "ws:";
-
-
-            socket =
-                new WebSocket(
-                    `${protocol}//${window.location.host}/ws/${webinarId}`
+                JSON.parse(
+                    event.data
                 );
 
+            // ==========================================
+            // PARTICIPANT JOINED
+            // ==========================================
 
-            socket.onopen =
-                function() {
+            if (
+                data.type ===
+                "participant_joined"
+            ) {
 
-                    document.getElementById(
-                        "connectionStatus"
-                    ).textContent =
-                        "Connected 🟢";
+                participantNames[
+                    data.participant_id
+                ] =
+                    data.participant_name;
 
-                };
+                updateParticipantCount(
+                    data.participant_count
+                );
 
+                addParticipant(
+                    data.participant_id,
+                    data.participant_name
+                );
 
-            socket.onclose =
-                function() {
+            }
 
-                    document.getElementById(
-                        "connectionStatus"
-                    ).textContent =
-                        "Disconnected 🔴";
+            // ==========================================
+            // PARTICIPANT READY
+            // ==========================================
+            // The participant WebSocket is now connected.
+            // This is the safe moment for the host to start
+            // the host <-> participant WebRTC connection.
 
-                };
+            if (
+                data.type ===
+                "participant_ready" &&
+                data.role ===
+                "participant"
+            ) {
 
+                participantNames[
+                    data.participant_id
+                ] =
+                    data.participant_name;
 
-            socket.onerror =
-                function() {
+                addParticipant(
+                    data.participant_id,
+                    data.participant_name
+                );
 
-                    document.getElementById(
-                        "connectionStatus"
-                    ).textContent =
-                        "Error 🔴";
+                await createPeerConnectionForParticipant(
+                    data.participant_id
+                );
 
-                };
+            }
 
+            // ==========================================
+            // WEBRTC ANSWER FROM PARTICIPANT
+            // ==========================================
 
-            socket.onmessage =
-                function(event) {
+            if (
+                data.type ===
+                "webrtc_answer" &&
+                data.role ===
+                "participant" &&
+                data.target_role ===
+                "host"
+            ) {
 
+                const pc =
+                    peerConnections[
+                        data.participant_id
+                    ];
 
-                    const data =
-                        JSON.parse(
-                            event.data
-                        );
+                if (!pc) {
 
+                    return;
 
-                    // -----------------------------
-                    // Participant joined
-                    // -----------------------------
+                }
 
-                    if (
-                        data.type
-                        === "participant_joined"
-                    ) {
+                try {
 
-                        document.getElementById(
-                            "participantCount"
-                        ).textContent =
-                            data.participant_count;
+                    await pc.setRemoteDescription(
+                        new RTCSessionDescription(
+                            data.answer
+                        )
+                    );
 
+                }
 
-                        addParticipant(
-                            data.participant_id,
-                            data.participant_name
-                        );
+                catch (error) {
 
+                    console.error(
+                        "Host answer error:",
+                        error
+                    );
 
-                        addActivity(
-                            `👤 ${data.participant_name} joined`
-                        );
+                }
 
-                    }
+            }
 
+            // ==========================================
+            // WEBRTC ICE FROM PARTICIPANT
+            // ==========================================
 
-                    // -----------------------------
-                    // Reaction
-                    // -----------------------------
+            if (
+                data.type ===
+                "webrtc_ice" &&
+                data.role ===
+                "participant" &&
+                data.target_role ===
+                "host"
+            ) {
 
-                    if (
-                        data.type
-                        === "reaction"
-                    ) {
+                const pc =
+                    peerConnections[
+                        data.participant_id
+                    ];
 
-                        if (
-                            data.reaction
-                            === "👍"
-                        ) {
+                if (
+                    pc &&
+                    data.candidate
+                ) {
 
-                            increaseCount(
-                                "likeCount"
-                            );
+                    try {
 
-                        }
-
-
-                        if (
-                            data.reaction
-                            === "👏"
-                        ) {
-
-                            increaseCount(
-                                "clapCount"
-                            );
-
-                        }
-
-
-                        if (
-                            data.reaction
-                            === "❤️"
-                        ) {
-
-                            increaseCount(
-                                "loveCount"
-                            );
-
-                        }
-
-
-                        if (
-                            data.reaction
-                            === "🔥"
-                        ) {
-
-                            increaseCount(
-                                "fireCount"
-                            );
-
-                        }
-
-
-                        addActivity(
-                            `${data.participant_name} reacted ${data.reaction}`
-                        );
-
-                    }
-
-
-                    // -----------------------------
-                    // Chat
-                    // -----------------------------
-
-                    if (
-                        data.type
-                        === "chat_message"
-                    ) {
-
-                        addChatMessage(
-                            data.participant_name,
-                            data.message
+                        await pc.addIceCandidate(
+                            new RTCIceCandidate(
+                                data.candidate
+                            )
                         );
 
                     }
 
+                    catch (error) {
 
-                    // -----------------------------
-                    // Poll created
-                    // -----------------------------
-
-                    if (
-                        data.type
-                        === "poll_created"
-                    ) {
-
-                        addActivity(
-                            `📊 Poll launched: ${data.question}`
+                        console.error(
+                            "Host ICE:",
+                            error
                         );
 
                     }
 
+                }
 
-                    // -----------------------------
-                    // Poll vote
-                    // -----------------------------
+            }
 
-                    if (
-                        data.type
-                        === "poll_vote"
-                    ) {
+            // ==========================================
+            // PARTICIPANT LEFT
+            // ==========================================
 
-                        showPollResult(
-                            data
-                        );
+            if (
+                data.type ===
+                "participant_left"
+            ) {
 
-                    }
+                const id =
+                    Number(
+                        data.participant_id
+                    );
 
+                const name =
+                    data.participant_name ||
+                    "Participant";
 
-                    // -----------------------------
-                    // Question
-                    // -----------------------------
+                delete participantNames[id];
 
-                    if (
-                        data.type
-                        === "question"
-                    ) {
+                removeParticipantVideo(id);
 
-                        addQuestion(
-                            data.question_id,
-                            data.participant_name,
-                            data.question
-                        );
+                removeParticipant(id);
 
+                updateParticipantCount(
+                    data.participant_count
+                );
 
-                        addActivity(
-                            `${data.participant_name} asked: ${data.question}`
-                        );
+                showLeaveNotification(
+                    `${name} left the webinar`
+                );
 
-                    }
+            }
 
+            // ==========================================
+            // REACTION
+            // ==========================================
 
-                    // -----------------------------
-                    // Question answered
-                    // -----------------------------
+            if (
+                data.type ===
+                "reaction"
+            ) {
 
-                    if (
-                        data.type
-                        === "question_answered"
-                    ) {
+                addReaction(
+                    data.participant_name,
+                    data.reaction
+                );
 
-                        addActivity(
-                            `Question ${data.question_id} was answered ✅`
-                        );
+                showFloatingReaction(
+                    data.reaction
+                );
 
-                    }
+            }
 
-                };
+            // ==========================================
+            // CHAT
+            // ==========================================
 
-        }
+            if (
+                data.type ===
+                "chat_message"
+            ) {
 
+                addChatMessage(
+                    data.participant_name,
+                    data.message
+                );
 
-        // =====================================================
-        // Participant List
-        // =====================================================
+            }
 
-        function addParticipant(
-            participantId,
-            participantName
+            // ==========================================
+            // POLL CREATED
+            // ==========================================
+
+            if (
+                data.type ===
+                "poll_created"
+            ) {
+
+                showPollCreated(
+                    data
+                );
+
+            }
+
+            // ==========================================
+            // POLL VOTE
+            // ==========================================
+
+            if (
+                data.type ===
+                "poll_vote"
+            ) {
+
+                showPollVote(
+                    data
+                );
+
+            }
+
+            // ==========================================
+            // QUESTION
+            // ==========================================
+
+            if (
+                data.type ===
+                "question"
+            ) {
+
+                addQuestion(
+                    data
+                );
+
+            }
+
+            // ==========================================
+            // QUESTION ANSWERED
+            // ==========================================
+
+            if (
+                data.type ===
+                "question_answered"
+            ) {
+
+                const element =
+                    document.querySelector(
+                        `[data-question-id="${data.question_id}"]`
+                    );
+
+                if (element) {
+
+                    element.classList.add(
+                        "opacity-50"
+                    );
+
+                }
+
+            }
+
+        };
+
+}
+
+async function createPeerConnectionForParticipant(
+    participantId
+) {
+
+    if (
+        peerConnections[
+            participantId
+        ]
+    ) {
+
+        return peerConnections[
+            participantId
+        ];
+
+    }
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfiguration
+        );
+
+    peerConnections[
+        participantId
+    ] =
+        pc;
+
+    // -------------------------------------------------
+    // HOST CAMERA + MICROPHONE
+    // -------------------------------------------------
+
+    if (localStream) {
+
+        localStream
+            .getTracks()
+            .forEach(
+                function(track) {
+
+                    pc.addTrack(
+                        track,
+                        localStream
+                    );
+
+                }
+            );
+
+    }
+
+    // -------------------------------------------------
+    // RECEIVE PARTICIPANT CAMERA + MICROPHONE
+    // -------------------------------------------------
+
+    pc.ontrack =
+        function(event) {
+
+            if (
+                !event.streams ||
+                !event.streams[0]
+            ) {
+
+                return;
+
+            }
+
+            createParticipantVideo(
+                participantId,
+                participantNames[
+                    participantId
+                ] ||
+                "Participant",
+                event.streams[0]
+            );
+
+        };
+
+    // -------------------------------------------------
+    // ICE
+    // -------------------------------------------------
+
+    pc.onicecandidate =
+        function(event) {
+
+            if (
+                event.candidate &&
+                socket &&
+                socket.readyState ===
+                WebSocket.OPEN
+            ) {
+
+                socket.send(
+                    JSON.stringify({
+
+                        type:
+                            "webrtc_ice",
+
+                        role:
+                            "host",
+
+                        target_role:
+                            "participant",
+
+                        participant_id:
+                            participantId,
+
+                        candidate:
+                            event.candidate
+
+                    })
+                );
+
+            }
+
+        };
+
+    pc.onconnectionstatechange =
+        function() {
+
+            console.log(
+                "Host -> Participant",
+                participantId,
+                "WebRTC:",
+                pc.connectionState
+            );
+
+            if (
+                pc.connectionState ===
+                "failed" ||
+
+                pc.connectionState ===
+                "closed" ||
+
+                pc.connectionState ===
+                "disconnected"
+            ) {
+
+                removeParticipantVideo(
+                    participantId
+                );
+
+            }
+
+        };
+
+    try {
+
+        const offer =
+            await pc.createOffer();
+
+        await pc.setLocalDescription(
+            offer
+        );
+
+        if (
+            socket &&
+            socket.readyState ===
+            WebSocket.OPEN
         ) {
 
+            socket.send(
+                JSON.stringify({
 
-            const list =
-                document.getElementById(
-                    "participantList"
-                );
+                    type:
+                        "webrtc_offer",
 
+                    role:
+                        "host",
 
-            if (
-                list.querySelector(
-                    `[data-participant-id="${participantId}"]`
-                )
-            ) {
+                    target_role:
+                        "participant",
 
-                return;
+                    participant_id:
+                        participantId,
 
-            }
+                    offer:
+                        pc.localDescription
 
-
-            const emptyMessage =
-                list.querySelector(
-                    ".empty-participants"
-                );
-
-
-            if (
-                emptyMessage
-            ) {
-
-                emptyMessage.remove();
-
-            }
-
-
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-
-            item.className =
-                "participant-item";
-
-
-            item.setAttribute(
-                "data-participant-id",
-                participantId
-            );
-
-
-            item.textContent =
-                `👤 ${participantName}`;
-
-
-            list.appendChild(
-                item
+                })
             );
 
         }
 
+    }
 
-        // =====================================================
-        // Increase Reaction Count
-        // =====================================================
+    catch (error) {
 
-        function increaseCount(
-            id
-        ) {
+        console.error(
+            "Host offer error:",
+            error
+        );
 
+    }
 
-            const element =
-                document.getElementById(
-                    id
-                );
+    return pc;
 
+}
 
-            const current =
-                Number(
-                    element.textContent
-                );
+function createParticipantVideo(
+    participantId,
+    name,
+    stream
+) {
 
+    let tile =
+        document.getElementById(
+            `participant-video-${participantId}`
+        );
 
-            element.textContent =
-                current + 1;
+    if (!tile) {
+
+        tile =
+            document.createElement(
+                "div"
+            );
+
+        tile.className =
+            "video-tile";
+
+        tile.id =
+            `participant-video-${participantId}`;
+
+        tile.innerHTML =
+            `
+            <video
+                autoplay
+                playsinline
+            ></video>
+
+            <div class="video-name">
+
+                <i class="bi bi-person"></i>
+
+                ${escapeHtml(name)}
+
+            </div>
+            `;
+
+        document
+            .getElementById(
+                "videoArea"
+            )
+            .appendChild(
+                tile
+            );
+
+    }
+
+    const video =
+        tile.querySelector(
+            "video"
+        );
+
+    if (
+        video.srcObject !==
+        stream
+    ) {
+
+        video.srcObject =
+            stream;
+
+        video.play().catch(
+            function() {}
+        );
+
+    }
+
+}
+
+function removeParticipantVideo(
+    participantId
+) {
+
+    const tile =
+        document.getElementById(
+            `participant-video-${participantId}`
+        );
+
+    if (tile) {
+
+        tile.remove();
+
+    }
+
+    if (
+        peerConnections[
+            participantId
+        ]
+    ) {
+
+        peerConnections[
+            participantId
+        ].close();
+
+    }
+
+    delete peerConnections[
+        participantId
+    ];
+
+}
+
+function removeParticipant(
+    participantId
+) {
+
+    const item =
+        document.querySelector(
+            `[data-participant-id="${participantId}"]`
+        );
+
+    if (item) {
+
+        item.remove();
+
+    }
+
+    const list =
+        document.getElementById(
+            "participantList"
+        );
+
+    if (
+        list &&
+        !list.querySelector(
+            ".participant-item"
+        )
+    ) {
+
+        if (!document.getElementById("emptyParticipants")) {
+
+            const empty =
+                document.createElement("div");
+
+            empty.id =
+                "emptyParticipants";
+
+            empty.className =
+                "text-secondary text-center small";
+
+            empty.textContent =
+                "Waiting for participants...";
+
+            list.appendChild(empty);
 
         }
 
+    }
 
-        // =====================================================
-        // Create Poll
-        // =====================================================
-
-        async function createPoll() {
+}
 
 
-            if (
-                webinarId === null
-            ) {
+function showLeaveNotification(
+    message
+) {
 
-                return;
+    const notification =
+        document.getElementById(
+            "leaveNotification"
+        );
 
-            }
+    if (!notification) {
 
+        return;
 
-            const question =
-                document.getElementById(
-                    "pollQuestion"
-                ).value.trim();
+    }
 
+    notification.textContent =
+        `🔔 ${message}`;
 
-            const option1 =
-                document.getElementById(
-                    "pollOption1"
-                ).value.trim();
+    notification.classList.add("show");
 
+    clearTimeout(
+        window.leaveNotificationTimer
+    );
 
-            const option2 =
-                document.getElementById(
-                    "pollOption2"
-                ).value.trim();
+    window.leaveNotificationTimer =
+        setTimeout(
+            function() {
 
-
-            const option3 =
-                document.getElementById(
-                    "pollOption3"
-                ).value.trim();
-
-
-            const option4 =
-                document.getElementById(
-                    "pollOption4"
-                ).value.trim();
-
-
-            const options =
-                [
-                    option1,
-                    option2,
-                    option3,
-                    option4
-                ].filter(
-                    function(option) {
-                        return option !== "";
-                    }
+                notification.classList.remove(
+                    "show"
                 );
 
+            },
+            3000
+        );
 
-            if (
-                !question
-                || options.length < 2
-            ) {
-
-                document.getElementById(
-                    "pollMessage"
-                ).textContent =
-                    "Enter a question and at least two options.";
-
-                return;
-
-            }
+}
 
 
-            const response =
-                await fetch(
-                    `/webinars/${webinarId}/polls`,
-                    {
-                        method: "POST",
-                        headers: {
+// =====================================================
+// PARTICIPANT COUNT
+// =====================================================
+
+function updateParticipantCount(
+    count
+) {
+
+
+    document
+        .getElementById(
+            "participantCount"
+        )
+        .textContent =
+        count || 0;
+
+}
+
+
+// =====================================================
+// PARTICIPANT LIST
+// =====================================================
+
+function addParticipant(
+    id,
+    name
+) {
+
+
+    const list =
+        document.getElementById(
+            "participantList"
+        );
+
+
+    if (
+        list.querySelector(
+            `[data-participant-id="${id}"]`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const empty =
+        document.getElementById(
+            "emptyParticipants"
+        );
+
+
+    if (empty) {
+
+        empty.remove();
+
+    }
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "participant-item";
+
+
+    item.dataset.participantId =
+        id;
+
+
+    item.innerHTML =
+
+        `
+        <span>
+
+            <i class="bi bi-person-circle text-primary me-1"></i>
+
+            ${escapeHtml(name)}
+
+        </span>
+
+        <span class="badge bg-success">
+
+            Online
+
+        </span>
+        `;
+
+
+    list.appendChild(
+        item
+    );
+
+}
+
+
+// =====================================================
+// CHAT
+// =====================================================
+
+async function sendChat() {
+
+
+    const input =
+        document.getElementById(
+            "chatMessage"
+        );
+
+
+    const message =
+        input.value.trim();
+
+
+    if (!message) {
+
+        return;
+
+    }
+
+
+    /*
+        Host does not have a participant ID,
+        so host chat is sent directly through
+        WebSocket as a broadcast event.
+    */
+
+    if (
+        !socket ||
+        socket.readyState !==
+        WebSocket.OPEN
+    ) {
+
+        alert(
+            "WebSocket is not connected."
+        );
+
+        return;
+
+    }
+
+
+    socket.send(
+
+        JSON.stringify({
+
+            type:
+                "chat_message",
+
+            participant_name:
+                "Host",
+
+            message:
+                message
+
+        })
+
+    );
+
+
+    input.value =
+        "";
+
+}
+
+
+function handleChatKey(
+    event
+) {
+
+
+    if (
+        event.key ===
+        "Enter"
+    ) {
+
+        sendChat();
+
+    }
+
+}
+
+
+// =====================================================
+// CHAT DISPLAY
+// =====================================================
+
+function addChatMessage(
+    name,
+    message
+) {
+
+
+    const list =
+        document.getElementById(
+            "chatList"
+        );
+
+
+    const empty =
+        document.getElementById(
+            "emptyChat"
+        );
+
+
+    if (empty) {
+
+        empty.remove();
+
+    }
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "chat-message";
+
+
+    item.innerHTML =
+
+        `
+        <div class="chat-name">
+
+            ${escapeHtml(name)}
+
+        </div>
+
+        <div class="chat-text">
+
+            ${escapeHtml(message)}
+
+        </div>
+        `;
+
+
+    list.appendChild(
+        item
+    );
+
+
+    list.scrollTop =
+        list.scrollHeight;
+
+}
+
+
+// =====================================================
+// REACTION
+// =====================================================
+
+function addReaction(
+    name,
+    reaction
+) {
+
+
+    const list =
+        document.getElementById(
+            "reactionList"
+        );
+
+
+    const empty =
+        document.getElementById(
+            "emptyReactions"
+        );
+
+
+    if (empty) {
+
+        empty.remove();
+
+    }
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "participant-item";
+
+
+    item.innerHTML =
+
+        `
+        <span>
+
+            ${reaction}
+
+            ${escapeHtml(name)}
+
+        </span>
+
+        <small>
+
+            reaction
+
+        </small>
+        `;
+
+
+    list.prepend(
+        item
+    );
+
+}
+
+
+function showFloatingReaction(
+    reaction
+) {
+
+
+    const area =
+        document.getElementById(
+            "videoArea"
+        );
+
+
+    const emoji =
+        document.createElement(
+            "div"
+        );
+
+
+    emoji.className =
+        "floating-reaction";
+
+
+    emoji.textContent =
+        reaction;
+
+
+    area.appendChild(
+        emoji
+    );
+
+
+    setTimeout(
+        function() {
+
+            emoji.remove();
+
+        },
+        2100
+    );
+
+}
+
+
+// =====================================================
+// POLL CREATION
+// =====================================================
+
+async function createPoll() {
+
+
+    const question =
+        document
+            .getElementById(
+                "pollQuestionInput"
+            )
+            .value
+            .trim();
+
+
+    const options = [
+
+        document
+            .getElementById(
+                "pollOption1"
+            )
+            .value
+            .trim(),
+
+        document
+            .getElementById(
+                "pollOption2"
+            )
+            .value
+            .trim(),
+
+        document
+            .getElementById(
+                "pollOption3"
+            )
+            .value
+            .trim(),
+
+        document
+            .getElementById(
+                "pollOption4"
+            )
+            .value
+            .trim()
+
+    ].filter(
+        Boolean
+    );
+
+
+    if (
+        !question ||
+        options.length < 2
+    ) {
+
+        alert(
+            "Enter a question and at least two options."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const response =
+            await fetch(
+
+                `/webinars/${webinarId}/polls`,
+
+                {
+
+                    method:
+                        "POST",
+
+                    headers:
+                        {
                             "Content-Type":
                                 "application/json"
                         },
-                        body:
-                            JSON.stringify(
-                                {
-                                    question:
-                                        question,
-                                    options:
-                                        options
-                                }
-                            )
-                    }
-                );
+
+                    body:
+                        JSON.stringify({
+
+                            question:
+                                question,
+
+                            options:
+                                options
+
+                        })
+
+                }
+
+            );
 
 
-            const data =
-                await response.json();
+        const data =
+            await response.json();
 
 
-            document.getElementById(
-                "pollMessage"
-            ).textContent =
-                data.message;
+        if (
+            !data.success
+        ) {
 
+            alert(
+                data.message
+            );
 
-            if (
-                data.success
-            ) {
-
-                document.getElementById(
-                    "pollQuestion"
-                ).value =
-                    "";
-
-                document.getElementById(
-                    "pollOption1"
-                ).value =
-                    "";
-
-                document.getElementById(
-                    "pollOption2"
-                ).value =
-                    "";
-
-                document.getElementById(
-                    "pollOption3"
-                ).value =
-                    "";
-
-                document.getElementById(
-                    "pollOption4"
-                ).value =
-                    "";
-
-            }
+            return;
 
         }
 
 
-        // =====================================================
-        // Poll Result
-        // =====================================================
+        document
+            .getElementById(
+                "pollQuestionInput"
+            )
+            .value =
+            "";
 
-        function showPollResult(
+
+        options.forEach(
+            function(_, index) {
+
+                document
+                    .getElementById(
+                        `pollOption${index + 1}`
+                    )
+                    .value =
+                    "";
+
+            }
+        );
+
+
+        showPollCreated(
             data
-        ) {
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+        alert(
+            "Unable to create poll."
+        );
+
+    }
+
+}
 
 
-            const results =
-                document.getElementById(
-                    "pollResults"
-                );
+// =====================================================
+// POLL DISPLAY
+// =====================================================
+
+function showPollCreated(
+    data
+) {
 
 
-            const item =
-                document.createElement(
-                    "div"
-                );
+    const results =
+        document.getElementById(
+            "pollResults"
+        );
 
 
-            item.className =
-                "poll-result";
+    results.innerHTML =
+
+        `
+        <div class="alert alert-info">
+
+            <strong>
+                ${escapeHtml(data.question)}
+            </strong>
+
+            <br>
+
+            Poll is live.
+
+        </div>
+        `;
 
 
-            item.textContent =
-                `Option ${data.option_id}: ${data.vote_count} vote(s)`;
+    showPanel(
+        "poll"
+    );
+
+}
 
 
-            results.prepend(
-                item
+function showPollVote(
+    data
+) {
+
+
+    const results =
+        document.getElementById(
+            "pollResults"
+        );
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "small mb-1";
+
+
+    item.textContent =
+
+        `${data.participant_name} voted. Total: ${data.vote_count}`;
+
+
+    results.appendChild(
+        item
+    );
+
+}
+
+
+// =====================================================
+// Q&A
+// =====================================================
+
+function addQuestion(
+    data
+) {
+
+
+    const list =
+        document.getElementById(
+            "questionList"
+        );
+
+
+    const empty =
+        document.getElementById(
+            "emptyQuestions"
+        );
+
+
+    if (empty) {
+
+        empty.remove();
+
+    }
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "question";
+
+
+    item.dataset.questionId =
+        data.question_id;
+
+
+    item.innerHTML =
+
+        `
+        <div class="question-name">
+
+            ${escapeHtml(data.participant_name)}
+
+        </div>
+
+        <div class="mb-2">
+
+            ${escapeHtml(data.question)}
+
+        </div>
+
+        <button
+            class="btn btn-sm btn-success"
+            onclick="answerQuestion(${data.question_id})"
+        >
+
+            Mark Answered
+
+        </button>
+        `;
+
+
+    list.prepend(
+        item
+    );
+
+
+    showPanel(
+        "qa"
+    );
+
+}
+
+
+async function answerQuestion(
+    questionId
+) {
+
+
+    try {
+
+
+        const response =
+            await fetch(
+
+                `/questions/${questionId}/answer`,
+
+                {
+                    method:
+                        "POST"
+                }
+
             );
 
 
-            addActivity(
-                `📊 Poll received a vote`
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(
+                data.message
             );
 
         }
 
+    }
 
-        // =====================================================
-        // Chat
-        // =====================================================
+    catch (error) {
 
-        function addChatMessage(
-            name,
-            message
-        ) {
+        console.error(
+            error
+        );
 
+    }
 
-            const list =
-                document.getElementById(
-                    "chatList"
-                );
+}
 
 
-            const emptyMessage =
-                list.textContent.trim()
-                === "Waiting for messages...";
+// =====================================================
+// SCREEN SHARE
+// =====================================================
+
+async function toggleScreenShare() {
+
+
+    if (
+        screenStream
+    ) {
+
+        stopScreenShare();
+
+        return;
+
+    }
+
+
+    try {
+
+
+        screenStream =
+            await navigator.mediaDevices.getDisplayMedia({
+
+                video: true,
+
+                audio: true
+
+            });
+
+
+        const screenTrack =
+            screenStream.getVideoTracks()[0];
+
+
+        Object.values(
+            peerConnections
+        ).forEach(
+            function(pc) {
+
+
+                const sender =
+                    pc
+                        .getSenders()
+                        .find(
+                            function(sender) {
+
+                                return (
+                                    sender.track &&
+                                    sender.track.kind ===
+                                    "video"
+                                );
+
+                            }
+                        );
+
+
+                if (sender) {
+
+                    sender.replaceTrack(
+                        screenTrack
+                    );
+
+                }
+
+            }
+        );
+
+
+        document
+            .getElementById(
+                "localVideo"
+            )
+            .srcObject =
+            screenStream;
+
+
+        screenTrack.onended =
+            function() {
+
+                stopScreenShare();
+
+            };
+
+
+        document
+            .getElementById(
+                "screenButton"
+            )
+            .classList.add(
+                "btn-primary"
+            );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Screen share:",
+            error
+        );
+
+    }
+
+}
+
+
+function stopScreenShare() {
+
+
+    if (!screenStream) {
+
+        return;
+
+    }
+
+
+    screenStream
+        .getTracks()
+        .forEach(
+            function(track) {
+
+                track.stop();
+
+            }
+        );
+
+
+    const cameraTrack =
+        localStream
+            .getVideoTracks()[0];
+
+
+    Object.values(
+        peerConnections
+    ).forEach(
+        function(pc) {
+
+
+            const sender =
+                pc
+                    .getSenders()
+                    .find(
+                        function(sender) {
+
+                            return (
+                                sender.track &&
+                                sender.track.kind ===
+                                "video"
+                            );
+
+                        }
+                    );
 
 
             if (
-                emptyMessage
+                sender &&
+                cameraTrack
             ) {
 
-                list.innerHTML =
-                    "";
+                sender.replaceTrack(
+                    cameraTrack
+                );
 
             }
 
-
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-
-            item.className =
-                "activity-item";
-
-
-            item.textContent =
-                `${name}: ${message}`;
-
-
-            list.prepend(
-                item
-            );
-
         }
+    );
 
 
-        // =====================================================
-        // Question
-        // =====================================================
-
-        function addQuestion(
-            questionId,
-            participantName,
-            question
-        ) {
+    document
+        .getElementById(
+            "localVideo"
+        )
+        .srcObject =
+        localStream;
 
 
-            const list =
-                document.getElementById(
-                    "questionList"
-                );
+    screenStream =
+        null;
+
+}
 
 
-            if (
-                list.textContent.trim()
-                === "Waiting for questions..."
-            ) {
+// =====================================================
+// MUTE
+// =====================================================
 
-                list.innerHTML =
-                    "";
+function toggleMute() {
+
+
+    if (!localStream) {
+
+        return;
+
+    }
+
+
+    localStream
+        .getAudioTracks()
+        .forEach(
+            function(track) {
+
+                track.enabled =
+                    !track.enabled;
+
+                microphoneEnabled =
+                    track.enabled;
 
             }
+        );
 
 
-            const item =
-                document.createElement(
-                    "div"
-                );
+    document
+        .getElementById(
+            "muteIcon"
+        )
+        .className =
+        microphoneEnabled
+            ? "bi bi-mic"
+            : "bi bi-mic-mute";
 
 
-            item.className =
-                "question-item";
+    document
+        .getElementById(
+            "muteText"
+        )
+        .textContent =
+        microphoneEnabled
+            ? "Mute"
+            : "Unmute";
+
+}
 
 
-            item.setAttribute(
-                "data-question-id",
-                questionId
-            );
+// =====================================================
+// CAMERA
+// =====================================================
+
+function toggleCamera() {
 
 
-            item.textContent =
-                `${participantName}: ${question}`;
+    if (!localStream) {
+
+        return;
+
+    }
 
 
-            list.prepend(
-                item
-            );
+    localStream
+        .getVideoTracks()
+        .forEach(
+            function(track) {
 
-        }
+                track.enabled =
+                    !track.enabled;
 
-
-        // =====================================================
-        // Activity
-        // =====================================================
-
-        function addActivity(
-            message
-        ) {
-
-
-            const list =
-                document.getElementById(
-                    "activityList"
-                );
-
-
-            if (
-                list.textContent.trim()
-                === "Waiting for activity..."
-            ) {
-
-                list.innerHTML =
-                    "";
+                cameraEnabled =
+                    track.enabled;
 
             }
+        );
 
 
-            const item =
-                document.createElement(
-                    "div"
-                );
+    document
+        .getElementById(
+            "cameraIcon"
+        )
+        .className =
+        cameraEnabled
+            ? "bi bi-camera-video"
+            : "bi bi-camera-video-off";
 
 
-            item.className =
-                "activity-item";
+    document
+        .getElementById(
+            "cameraText"
+        )
+        .textContent =
+        cameraEnabled
+            ? "Video"
+            : "Start Video";
+
+}
 
 
-            item.textContent =
-                message;
+// =====================================================
+// PANELS
+// =====================================================
+
+function showPanel(
+    panel
+) {
 
 
-            list.prepend(
-                item
+    const panels = {
+
+        people:
+            document.getElementById(
+                "peoplePanel"
+            ),
+
+        chat:
+            document.getElementById(
+                "chatPanel"
+            ),
+
+        poll:
+            document.getElementById(
+                "pollPanel"
+            ),
+
+        qa:
+            document.getElementById(
+                "qaPanel"
+            )
+
+    };
+
+
+    const tabs = {
+
+        people:
+            document.getElementById(
+                "peopleTab"
+            ),
+
+        chat:
+            document.getElementById(
+                "chatTab"
+            ),
+
+        poll:
+            document.getElementById(
+                "pollTab"
+            ),
+
+        qa:
+            document.getElementById(
+                "qaTab"
+            )
+
+    };
+
+
+    Object.values(
+        panels
+    ).forEach(
+        function(element) {
+
+            element.style.display =
+                "none";
+
+        }
+    );
+
+
+    Object.values(
+        tabs
+    ).forEach(
+        function(element) {
+
+            element.classList.remove(
+                "active"
             );
 
         }
+    );
 
 
-        // =====================================================
-        // Start New Webinar
-        // =====================================================
+    panels[
+        panel
+    ].style.display =
+        "block";
 
-        function startNewWebinar() {
+
+    tabs[
+        panel
+    ].classList.add(
+        "active"
+    );
 
 
-            if (
-                socket
-            ) {
+    document
+        .getElementById(
+            "chatInputArea"
+        )
+        .style.display =
+        panel === "chat"
+            ? "flex"
+            : "none";
 
-                socket.close();
+}
 
+
+// =====================================================
+// COPY
+// =====================================================
+
+async function copyCode() {
+
+
+    await navigator.clipboard.writeText(
+        webinarJoinCode
+    );
+
+
+    alert(
+        "Webinar code copied!"
+    );
+
+}
+
+
+// =====================================================
+// END
+// =====================================================
+
+async function endWebinar() {
+
+
+    Object.values(
+        peerConnections
+    ).forEach(
+        function(pc) {
+
+            pc.close();
+
+        }
+    );
+
+
+    if (localStream) {
+
+        localStream
+            .getTracks()
+            .forEach(
+                function(track) {
+
+                    track.stop();
+
+                }
+            );
+
+    }
+
+
+    if (socket) {
+
+        socket.close();
+
+    }
+
+
+    try {
+
+        await fetch(
+            `/webinars/${webinarId}/end`,
+            {
+                method:
+                    "POST"
             }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+    }
 
 
-            localStorage.removeItem(
-                "liveconnect_webinar_id"
-            );
+    window.location.href =
+        `/analytics?webinar_id=${webinarId}`;
+
+}
 
 
-            localStorage.removeItem(
-                "liveconnect_webinar_title"
-            );
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHtml(
+    value
+) {
 
 
-            localStorage.removeItem(
-                "liveconnect_join_code"
-            );
+    const div =
+        document.createElement(
+            "div"
+        );
 
 
-            window.location.href =
-                "/host?new=1";
-
-        }
+    div.textContent =
+        value ?? "";
 
 
-        // =====================================================
-        // End Webinar
-        // =====================================================
+    return div.innerHTML;
 
-        async function endWebinar() {
+}
 
 
-            if (
-                socket
-            ) {
-
-                socket.close();
-
-            }
-
-
-            window.location.href =
-                `/analytics?webinar_id=${webinarId}`;
-
-        }
-
-
-    </script>
+</script>
 
 
 </body>
