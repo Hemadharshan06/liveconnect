@@ -1327,9 +1327,10 @@ body {
 
 let webinarId = null;
 
-let webinarJoinCode = null;
+// PHP signaling server
+const PHP_BASE_URL = "http://127.0.0.1:9000";
 
-let socket = null;
+let webinarJoinCode = null;
 
 let localStream = null;
 
@@ -1493,7 +1494,7 @@ async function startWebinar() {
         await startCamera();
 
 
-        connectWebSocket();
+        connectPHPPolling();
 
 
     }
@@ -1544,354 +1545,524 @@ async function startCamera() {
 }
 
 
-function connectWebSocket() {
+function sendSignal(data) {
 
-    const protocol =
-        location.protocol === "https:"
-            ? "wss:"
-            : "ws:";
+    if (!webinarId) {
+        return Promise.resolve(null);
+    }
 
-    socket =
-        new WebSocket(
-            `${protocol}//${location.host}/ws/${webinarId}`
+    return fetch(
+        `${PHP_BASE_URL}/signal.php`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                webinar_id: webinarId,
+
+                sender_id: "host",
+
+                ...data
+            })
+        }
+    )
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+
+        if (!data.success) {
+            console.error(
+                "PHP signal error:",
+                data.message
+            );
+        }
+
+        return data;
+
+    })
+    .catch(function(error) {
+
+        console.error(
+            "PHP signal request failed:",
+            error
         );
 
-    socket.onopen =
-        function() {
+        return null;
 
-            const status =
-                document.getElementById(
-                    "connectionStatus"
-                );
+    });
 
-            status.className =
-                "badge bg-success";
+}
 
-            status.textContent =
-                "Connected 🟢";
 
-        };
+let lastSignalTimestamp = 0;
 
-    socket.onclose =
-        function() {
+let phpPollingTimer = null;
 
-            const status =
-                document.getElementById(
-                    "connectionStatus"
-                );
+let phpPollingRunning = false;
 
-            status.className =
-                "badge bg-danger";
 
-            status.textContent =
-                "Disconnected 🔴";
+function connectPHPPolling() {
 
-        };
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
 
-    socket.onerror =
-        function(error) {
+    status.className =
+        "badge bg-warning";
 
-            console.error(
-                "WebSocket:",
-                error
+    status.textContent =
+        "PHP Connecting...";
+
+    lastSignalTimestamp = 0;
+
+    if (phpPollingTimer) {
+        clearInterval(phpPollingTimer);
+    }
+
+    pollPHPSignals();
+
+    phpPollingTimer =
+        setInterval(
+            pollPHPSignals,
+            300
+        );
+
+}
+
+
+async function pollPHPSignals() {
+
+    if (
+        phpPollingRunning ||
+        !webinarId
+    ) {
+
+        return;
+
+    }
+
+    phpPollingRunning = true;
+
+    try {
+
+        const response =
+            await fetch(
+                `${PHP_BASE_URL}/poll.php?webinar_id=${encodeURIComponent(webinarId)}&receiver_id=host&after=${encodeURIComponent(lastSignalTimestamp)}`,
+                {
+                    cache: "no-store"
+                }
             );
 
-        };
+        if (!response.ok) {
+            throw new Error(
+                `PHP poll HTTP ${response.status}`
+            );
+        }
 
-    socket.onmessage =
-        async function(event) {
+        const data =
+            await response.json();
 
-            const data =
-                JSON.parse(
-                    event.data
+        if (!data.success) {
+            throw new Error(
+                data.message ||
+                "PHP polling failed."
+            );
+        }
+
+        if (
+            typeof data.timestamp ===
+            "number"
+        ) {
+
+            lastSignalTimestamp =
+                Math.max(
+                    lastSignalTimestamp,
+                    data.timestamp
                 );
 
-            // ==========================================
-            // PARTICIPANT JOINED
-            // ==========================================
+        }
 
-            if (
-                data.type ===
-                "participant_joined"
-            ) {
+        const signals =
+            data.signals || [];
 
-                participantNames[
-                    data.participant_id
-                ] =
-                    data.participant_name;
+        for (
+            const signal
+            of signals
+        ) {
 
-                updateParticipantCount(
-                    data.participant_count
-                );
+            await handlePHPSignal(
+                signal
+            );
 
-                addParticipant(
-                    data.participant_id,
-                    data.participant_name
-                );
+        }
 
-            }
+        const status =
+            document.getElementById(
+                "connectionStatus"
+            );
 
-            // ==========================================
-            // PARTICIPANT READY
-            // ==========================================
-            // The participant WebSocket is now connected.
-            // This is the safe moment for the host to start
-            // the host <-> participant WebRTC connection.
+        status.className =
+            "badge bg-success";
 
-            if (
-                data.type ===
-                "participant_ready" &&
-                data.role ===
-                "participant"
-            ) {
+        status.textContent =
+            "PHP Connected 🟢";
 
-                participantNames[
-                    data.participant_id
-                ] =
-                    data.participant_name;
+    }
 
-                addParticipant(
-                    data.participant_id,
-                    data.participant_name
-                );
+    catch (error) {
 
-                await createPeerConnectionForParticipant(
-                    data.participant_id
-                );
+        console.error(
+            "PHP polling:",
+            error
+        );
 
-            }
+        const status =
+            document.getElementById(
+                "connectionStatus"
+            );
 
-            // ==========================================
-            // WEBRTC ANSWER FROM PARTICIPANT
-            // ==========================================
+        status.className =
+            "badge bg-warning";
 
-            if (
-                data.type ===
-                "webrtc_answer" &&
-                data.role ===
-                "participant" &&
-                data.target_role ===
-                "host"
-            ) {
+        status.textContent =
+            "PHP Reconnecting...";
 
-                const pc =
-                    peerConnections[
-                        data.participant_id
-                    ];
+    }
 
-                if (!pc) {
+    finally {
 
-                    return;
+        phpPollingRunning =
+            false;
 
-                }
+    }
 
-                try {
+}
 
-                    await pc.setRemoteDescription(
-                        new RTCSessionDescription(
-                            data.answer
-                        )
-                    );
 
-                }
+async function handlePHPSignal(data) {
 
-                catch (error) {
+    if (!data || !data.type) {
+        return;
+    }
 
-                    console.error(
-                        "Host answer error:",
-                        error
-                    );
 
-                }
+    // ==========================================
+    // PARTICIPANT JOINED
+    // ==========================================
 
-            }
+    if (
+        data.type ===
+        "participant_joined"
+    ) {
 
-            // ==========================================
-            // WEBRTC ICE FROM PARTICIPANT
-            // ==========================================
+        participantNames[
+            data.participant_id
+        ] =
+            data.participant_name;
 
-            if (
-                data.type ===
-                "webrtc_ice" &&
-                data.role ===
-                "participant" &&
-                data.target_role ===
-                "host"
-            ) {
+        updateParticipantCount(
+            data.participant_count
+        );
 
-                const pc =
-                    peerConnections[
-                        data.participant_id
-                    ];
+        addParticipant(
+            data.participant_id,
+            data.participant_name
+        );
 
-                if (
-                    pc &&
-                    data.candidate
-                ) {
+        // Start the WebRTC offer as soon as the host
+        // knows that this participant has joined.
+        // This removes the dependency on a separate
+        // participant_ready signal reaching the host.
+        await createPeerConnectionForParticipant(
+            data.participant_id
+        );
 
-                    try {
+    }
 
-                        await pc.addIceCandidate(
-                            new RTCIceCandidate(
-                                data.candidate
-                            )
-                        );
 
-                    }
+    // ==========================================
+    // PARTICIPANT READY
+    // ==========================================
 
-                    catch (error) {
+    if (
+        data.type ===
+        "participant_ready" &&
+        data.role ===
+        "participant"
+    ) {
 
-                        console.error(
-                            "Host ICE:",
-                            error
-                        );
+        participantNames[
+            data.participant_id
+        ] =
+            data.participant_name ||
+            participantNames[
+                data.participant_id
+            ] ||
+            "Participant";
 
-                    }
+        addParticipant(
+            data.participant_id,
+            participantNames[
+                data.participant_id
+            ]
+        );
 
-                }
+        await createPeerConnectionForParticipant(
+            data.participant_id
+        );
 
-            }
+    }
 
-            // ==========================================
-            // PARTICIPANT LEFT
-            // ==========================================
 
-            if (
-                data.type ===
-                "participant_left"
-            ) {
+    // ==========================================
+    // WEBRTC ANSWER FROM PARTICIPANT
+    // ==========================================
 
-                const id =
-                    Number(
-                        data.participant_id
-                    );
+    if (
+        data.type ===
+        "webrtc_answer" &&
+        data.role ===
+        "participant" &&
+        data.target_role ===
+        "host"
+    ) {
 
-                const name =
-                    data.participant_name ||
-                    "Participant";
+        const id =
+            Number(
+                data.participant_id
+            );
 
-                delete participantNames[id];
+        const pc =
+            peerConnections[id];
 
-                removeParticipantVideo(id);
+        if (
+            pc &&
+            data.answer
+        ) {
 
-                removeParticipant(id);
+            try {
 
-                updateParticipantCount(
-                    data.participant_count
-                );
-
-                showLeaveNotification(
-                    `${name} left the webinar`
-                );
-
-            }
-
-            // ==========================================
-            // REACTION
-            // ==========================================
-
-            if (
-                data.type ===
-                "reaction"
-            ) {
-
-                addReaction(
-                    data.participant_name,
-                    data.reaction
-                );
-
-                showFloatingReaction(
-                    data.reaction
+                await pc.setRemoteDescription(
+                    new RTCSessionDescription(
+                        data.answer
+                    )
                 );
 
             }
 
-            // ==========================================
-            // CHAT
-            // ==========================================
+            catch (error) {
 
-            if (
-                data.type ===
-                "chat_message"
-            ) {
-
-                addChatMessage(
-                    data.participant_name,
-                    data.message
+                console.error(
+                    "Host answer error:",
+                    error
                 );
 
             }
 
-            // ==========================================
-            // POLL CREATED
-            // ==========================================
+        }
 
-            if (
-                data.type ===
-                "poll_created"
-            ) {
+    }
 
-                showPollCreated(
-                    data
+
+    // ==========================================
+    // WEBRTC ICE FROM PARTICIPANT
+    // ==========================================
+
+    if (
+        data.type ===
+        "webrtc_ice" &&
+        data.role ===
+        "participant" &&
+        data.target_role ===
+        "host"
+    ) {
+
+        const id =
+            Number(
+                data.participant_id
+            );
+
+        const pc =
+            peerConnections[id];
+
+        if (
+            pc &&
+            data.candidate
+        ) {
+
+            try {
+
+                await pc.addIceCandidate(
+                    new RTCIceCandidate(
+                        data.candidate
+                    )
                 );
 
             }
 
-            // ==========================================
-            // POLL VOTE
-            // ==========================================
+            catch (error) {
 
-            if (
-                data.type ===
-                "poll_vote"
-            ) {
-
-                showPollVote(
-                    data
+                console.error(
+                    "Host ICE:",
+                    error
                 );
 
             }
 
-            // ==========================================
-            // QUESTION
-            // ==========================================
+        }
 
-            if (
-                data.type ===
-                "question"
-            ) {
+    }
 
-                addQuestion(
-                    data
-                );
 
-            }
+    // ==========================================
+    // PARTICIPANT LEFT
+    // ==========================================
 
-            // ==========================================
-            // QUESTION ANSWERED
-            // ==========================================
+    if (
+        data.type ===
+        "participant_left"
+    ) {
 
-            if (
-                data.type ===
-                "question_answered"
-            ) {
+        const id =
+            Number(
+                data.participant_id
+            );
 
-                const element =
-                    document.querySelector(
-                        `[data-question-id="${data.question_id}"]`
-                    );
+        const name =
+            data.participant_name ||
+            "Participant";
 
-                if (element) {
+        delete participantNames[id];
 
-                    element.classList.add(
-                        "opacity-50"
-                    );
+        removeParticipantVideo(id);
 
-                }
+        removeParticipant(id);
 
-            }
+        updateParticipantCount(
+            data.participant_count
+        );
 
-        };
+        showLeaveNotification(
+            `${name} left the webinar`
+        );
+
+    }
+
+
+    // ==========================================
+    // REACTION
+    // ==========================================
+
+    if (
+        data.type ===
+        "reaction"
+    ) {
+
+        addReaction(
+            data.participant_name,
+            data.reaction
+        );
+
+        showFloatingReaction(
+            data.reaction
+        );
+
+    }
+
+
+    // ==========================================
+    // CHAT
+    // ==========================================
+
+    if (
+        data.type ===
+        "chat_message"
+    ) {
+
+        addChatMessage(
+            data.participant_name,
+            data.message
+        );
+
+    }
+
+
+    // ==========================================
+    // POLL CREATED
+    // ==========================================
+
+    if (
+        data.type ===
+        "poll_created"
+    ) {
+
+        showPollCreated(
+            data
+        );
+
+    }
+
+
+    // ==========================================
+    // POLL VOTE
+    // ==========================================
+
+    if (
+        data.type ===
+        "poll_vote"
+    ) {
+
+        showPollVote(
+            data
+        );
+
+    }
+
+
+    // ==========================================
+    // QUESTION
+    // ==========================================
+
+    if (
+        data.type ===
+        "question"
+    ) {
+
+        addQuestion(
+            data
+        );
+
+    }
+
+
+    // ==========================================
+    // QUESTION ANSWERED
+    // ==========================================
+
+    if (
+        data.type ===
+        "question_answered"
+    ) {
+
+        const element =
+            document.querySelector(
+                `[data-question-id="${data.question_id}"]`
+            );
+
+        if (element) {
+
+            element.classList.add(
+                "opacity-50"
+            );
+
+        }
+
+    }
 
 }
 
@@ -1976,33 +2147,26 @@ async function createPeerConnectionForParticipant(
     pc.onicecandidate =
         function(event) {
 
-            if (
-                event.candidate &&
-                socket &&
-                socket.readyState ===
-                WebSocket.OPEN
-            ) {
+            if (event.candidate) {
 
-                socket.send(
-                    JSON.stringify({
+                sendSignal({
 
-                        type:
-                            "webrtc_ice",
+                    type:
+                        "webrtc_ice",
 
-                        role:
-                            "host",
+                    role:
+                        "host",
 
-                        target_role:
-                            "participant",
+                    target_role:
+                        "participant",
 
-                        participant_id:
-                            participantId,
+                    participant_id:
+                        participantId,
 
-                        candidate:
-                            event.candidate
+                    candidate:
+                        event.candidate
 
-                    })
-                );
+                });
 
             }
 
@@ -2046,34 +2210,24 @@ async function createPeerConnectionForParticipant(
             offer
         );
 
-        if (
-            socket &&
-            socket.readyState ===
-            WebSocket.OPEN
-        ) {
+        await sendSignal({
 
-            socket.send(
-                JSON.stringify({
+            type:
+                "webrtc_offer",
 
-                    type:
-                        "webrtc_offer",
+            role:
+                "host",
 
-                    role:
-                        "host",
+            target_role:
+                "participant",
 
-                    target_role:
-                        "participant",
+            participant_id:
+                participantId,
 
-                    participant_id:
-                        participantId,
+            offer:
+                pc.localDescription
 
-                    offer:
-                        pc.localDescription
-
-                })
-            );
-
-        }
+        });
 
     }
 
@@ -2406,30 +2560,8 @@ async function sendChat() {
     }
 
 
-    /*
-        Host does not have a participant ID,
-        so host chat is sent directly through
-        WebSocket as a broadcast event.
-    */
-
-    if (
-        !socket ||
-        socket.readyState !==
-        WebSocket.OPEN
-    ) {
-
-        alert(
-            "WebSocket is not connected."
-        );
-
-        return;
-
-    }
-
-
-    socket.send(
-
-        JSON.stringify({
+    const result =
+        await sendSignal({
 
             type:
                 "chat_message",
@@ -2440,13 +2572,22 @@ async function sendChat() {
             message:
                 message
 
-        })
+        });
 
-    );
+    if (
+        result &&
+        result.success
+    ) {
 
+        addChatMessage(
+            "Host",
+            message
+        );
 
-    input.value =
-        "";
+        input.value =
+            "";
+
+    }
 
 }
 
@@ -2785,6 +2926,22 @@ async function createPoll() {
             data
         );
 
+        await sendSignal({
+
+            type:
+                "poll_created",
+
+            poll_id:
+                data.poll_id,
+
+            question:
+                data.question || question,
+
+            options:
+                data.options || []
+
+        });
+
     }
 
     catch (error) {
@@ -2985,7 +3142,19 @@ async function answerQuestion(
                 data.message
             );
 
+            return;
+
         }
+
+        await sendSignal({
+
+            type:
+                "question_answered",
+
+            question_id:
+                questionId
+
+        });
 
     }
 
@@ -3447,9 +3616,14 @@ async function endWebinar() {
     }
 
 
-    if (socket) {
+    if (phpPollingTimer) {
 
-        socket.close();
+        clearInterval(
+            phpPollingTimer
+        );
+
+        phpPollingTimer =
+            null;
 
     }
 
