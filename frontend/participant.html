@@ -12,7 +12,6 @@
 
 <title>LiveConnect - Participant</title>
 
-
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -23,13 +22,11 @@
     rel="stylesheet"
 >
 
-
 <style>
 
 * {
     box-sizing: border-box;
 }
-
 
 html,
 body {
@@ -47,7 +44,6 @@ body {
 
     background: #111827;
 }
-
 
 #joinSection {
 
@@ -69,7 +65,6 @@ body {
         );
 }
 
-
 .join-card {
 
     width: 100%;
@@ -87,7 +82,6 @@ body {
         rgba(0,0,0,.3);
 }
 
-
 #webinarSection {
 
     height: 100vh;
@@ -98,7 +92,6 @@ body {
 
     overflow: hidden;
 }
-
 
 .topbar {
 
@@ -123,7 +116,6 @@ body {
         0 18px;
 }
 
-
 .brand {
 
     font-size: 21px;
@@ -137,12 +129,10 @@ body {
     gap: 8px;
 }
 
-
 .brand i {
 
     color: #3b82f6;
 }
-
 
 .live {
 
@@ -160,7 +150,6 @@ body {
     font-size: 12px;
 }
 
-
 .main {
 
     flex: 1;
@@ -175,7 +164,6 @@ body {
 
     overflow: hidden;
 }
-
 
 .video-area {
 
@@ -193,7 +181,6 @@ body {
 
     overflow: hidden;
 }
-
 
 #participantVideoGrid {
 
@@ -225,7 +212,6 @@ body {
     overflow-y: auto;
 }
 
-
 .participant-video-tile {
 
     position: relative;
@@ -239,7 +225,6 @@ body {
     overflow: hidden;
 }
 
-
 .participant-video-tile video {
 
     width: 100%;
@@ -249,13 +234,11 @@ body {
     object-fit: cover;
 }
 
-
 .local-video-tile {
 
     border:
         1px solid #374151;
 }
-
 
 .waiting {
 
@@ -272,14 +255,14 @@ body {
     flex-direction: column;
 
     color: #6b7280;
-}
 
+    pointer-events: none;
+}
 
 .waiting i {
 
     font-size: 60px;
 }
-
 
 .video-label {
 
@@ -302,7 +285,6 @@ body {
     font-size: 12px;
 }
 
-
 .floating-reaction {
 
     position: absolute;
@@ -324,11 +306,6 @@ body {
         floatEmoji 2s forwards;
 }
 
-
-/* =====================================================
-   LEAVE NOTIFICATION
-   ===================================================== */
-
 .leave-notification {
 
     position: fixed;
@@ -337,21 +314,28 @@ body {
 
     left: 50%;
 
-    transform: translateX(-50%) translateY(-15px);
+    transform:
+        translateX(-50%)
+        translateY(-15px);
 
     z-index: 9999;
 
-    background: rgba(31, 41, 55, .96);
+    background:
+        rgba(31, 41, 55, .96);
 
     color: white;
 
-    border: 1px solid #4b5563;
+    border:
+        1px solid #4b5563;
 
     border-radius: 10px;
 
-    padding: 10px 16px;
+    padding:
+        10px 16px;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,.35);
 
     font-size: 13px;
 
@@ -359,14 +343,18 @@ body {
 
     pointer-events: none;
 
-    transition: opacity .25s ease, transform .25s ease;
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
 }
 
 .leave-notification.show {
 
     opacity: 1;
 
-    transform: translateX(-50%) translateY(0);
+    transform:
+        translateX(-50%)
+        translateY(0);
 }
 
 @keyframes floatEmoji {
@@ -402,9 +390,7 @@ body {
             translate(-50%,-170px)
             scale(1.3);
     }
-
 }
-
 
 .side {
 
@@ -427,7 +413,6 @@ body {
     color: white;
 }
 
-
 .tabs {
 
     height: 48px;
@@ -437,7 +422,6 @@ body {
     border-bottom:
         1px solid #374151;
 }
-
 
 .tab {
 
@@ -452,7 +436,6 @@ body {
     cursor: pointer;
 }
 
-
 .tab.active {
 
     color: white;
@@ -460,7 +443,6 @@ body {
     border-bottom:
         2px solid #3b82f6;
 }
-
 
 .panel {
 
@@ -473,14 +455,12 @@ body {
     padding: 12px;
 }
 
-
 .chat-message {
 
     margin-bottom: 10px;
 
     font-size: 13px;
 }
-
 
 .chat-name {
 
@@ -489,14 +469,12 @@ body {
     font-weight: bold;
 }
 
-
 .chat-text {
 
     color: #e5e7eb;
 
     word-break: break-word;
 }
-
 
 .participant-item {
 
@@ -513,7 +491,6 @@ body {
     justify-content: space-between;
 }
 
-
 .question {
 
     background: #374151;
@@ -527,14 +504,12 @@ body {
     font-size: 13px;
 }
 
-
 .question-name {
 
     color: #93c5fd;
 
     font-weight: bold;
 }
-
 
 .chat-input {
 
@@ -547,7 +522,6 @@ body {
 
     gap: 6px;
 }
-
 
 .chat-input input {
 
@@ -562,7 +536,6 @@ body {
     border:
         1px solid #4b5563;
 }
-
 
 .controlbar {
 
@@ -585,7 +558,6 @@ body {
 
     padding: 8px;
 }
-
 
 .control {
 
@@ -614,24 +586,20 @@ body {
     font-size: 11px;
 }
 
-
 .control i {
 
     font-size: 18px;
 }
-
 
 .control:hover {
 
     background: #4b5563;
 }
 
-
 .leave {
 
     background: #dc2626;
 }
-
 
 @media(max-width:850px) {
 
@@ -639,9 +607,7 @@ body {
 
         width: 270px;
     }
-
 }
-
 
 @media(max-width:650px) {
 
@@ -659,18 +625,18 @@ body {
 
         display: none;
     }
-
 }
-
 
 </style>
 
 </head>
 
-
 <body>
 
-<div id="leaveNotification" class="leave-notification"></div>
+<div
+    id="leaveNotification"
+    class="leave-notification"
+></div>
 
 
 <!-- =====================================================
@@ -690,20 +656,13 @@ body {
 
         </div>
 
-
         <h3 class="text-center">
-
             Join Webinar
-
         </h3>
 
-
         <p class="text-center text-muted">
-
             Enter your name and webinar code.
-
         </p>
-
 
         <input
             id="participantName"
@@ -711,13 +670,11 @@ body {
             placeholder="Your name"
         >
 
-
         <input
             id="joinCode"
             class="form-control mb-3 text-uppercase"
             placeholder="Webinar code"
         >
-
 
         <button
             id="joinButton"
@@ -730,7 +687,6 @@ body {
             Join Webinar
 
         </button>
-
 
         <div
             id="joinMessage"
@@ -751,9 +707,7 @@ body {
     style="display:none;"
 >
 
-
 <header class="topbar">
-
 
     <div class="brand">
 
@@ -763,34 +717,24 @@ body {
 
     </div>
 
-
     <div class="d-flex align-items-center gap-2">
-
 
         <span
             id="webinarTitle"
             class="text-secondary"
         >
-
             Live Webinar
-
         </span>
-
 
         <span class="live">
-
             ● LIVE
-
         </span>
-
 
         <span
             id="connectionStatus"
             class="badge bg-warning"
         >
-
             Connecting
-
         </span>
 
     </div>
@@ -807,7 +751,6 @@ body {
         id="videoArea"
         class="video-area"
     >
-
 
         <div
             id="participantVideoGrid"
@@ -827,11 +770,15 @@ body {
                 ></video>
 
                 <div class="video-label">
+
                     <i class="bi bi-person-video3 me-1"></i>
+
                     You
+
                 </div>
 
             </div>
+
 
             <div
                 id="waiting"
@@ -859,9 +806,7 @@ body {
 
     <aside class="side">
 
-
         <div class="tabs">
-
 
             <button
                 id="chatTab"
@@ -875,7 +820,6 @@ body {
 
             </button>
 
-
             <button
                 id="peopleTab"
                 class="tab"
@@ -888,7 +832,6 @@ body {
 
             </button>
 
-
             <button
                 id="pollTab"
                 class="tab"
@@ -900,7 +843,6 @@ body {
                 Poll
 
             </button>
-
 
             <button
                 id="qaTab"
@@ -948,27 +890,20 @@ body {
             style="display:none;"
         >
 
-
             <div class="d-flex justify-content-between mb-3">
 
                 <span class="text-secondary">
-
                     Participants
-
                 </span>
-
 
                 <span
                     id="participantCount"
                     class="badge bg-primary"
                 >
-
                     0
-
                 </span>
 
             </div>
-
 
             <div id="participantList"></div>
 
@@ -983,27 +918,19 @@ body {
             style="display:none;"
         >
 
-
             <h6 id="pollQuestion">
-
                 Waiting for poll...
-
             </h6>
-
 
             <div id="pollOptions"></div>
 
-
             <hr>
-
 
             <div
                 id="pollResults"
                 class="small"
             >
-
                 Vote results will appear here.
-
             </div>
 
         </div>
@@ -1017,14 +944,12 @@ body {
             style="display:none;"
         >
 
-
             <textarea
                 id="questionInput"
                 class="form-control mb-2"
                 rows="3"
                 placeholder="Ask your question..."
             ></textarea>
-
 
             <button
                 onclick="askQuestion()"
@@ -1037,15 +962,12 @@ body {
 
             </button>
 
-
             <div
                 id="questionMessage"
                 class="small"
             ></div>
 
-
             <hr>
-
 
             <div id="questionList"></div>
 
@@ -1065,7 +987,6 @@ body {
                 placeholder="Type a message..."
                 onkeydown="handleChatKey(event)"
             >
-
 
             <button
                 onclick="sendChat()"
@@ -1087,7 +1008,6 @@ body {
 
 <footer class="controlbar">
 
-
     <button
         id="muteButton"
         class="control"
@@ -1104,7 +1024,6 @@ body {
         </span>
 
     </button>
-
 
     <button
         id="videoButton"
@@ -1123,7 +1042,6 @@ body {
 
     </button>
 
-
     <button
         id="screenButton"
         class="control"
@@ -1138,7 +1056,6 @@ body {
 
     </button>
 
-
     <button
         class="control"
         onclick="sendReaction('👍')"
@@ -1151,7 +1068,6 @@ body {
         </span>
 
     </button>
-
 
     <button
         class="control"
@@ -1166,7 +1082,6 @@ body {
 
     </button>
 
-
     <button
         class="control"
         onclick="sendReaction('❤️')"
@@ -1180,7 +1095,6 @@ body {
 
     </button>
 
-
     <button
         class="control"
         onclick="sendReaction('🔥')"
@@ -1193,7 +1107,6 @@ body {
         </span>
 
     </button>
-
 
     <button
         onclick="leaveWebinar()"
@@ -1210,13 +1123,10 @@ body {
 
 </footer>
 
-
 </div>
 
 
 <script>
-
-
 
 // =====================================================
 // VARIABLES
@@ -1224,11 +1134,12 @@ body {
 
 let webinarId = null;
 
+// PHP signaling server
+const PHP_BASE_URL = "http://127.0.0.1:9000";
+
 let participantId = null;
 
 let participantName = null;
-
-let socket = null;
 
 let localStream = null;
 
@@ -1238,10 +1149,24 @@ let microphoneEnabled = true;
 
 let cameraEnabled = true;
 
-// One peer connection for the host.
+
+// =====================================================
+// PHP SIGNALING VARIABLES
+// =====================================================
+
+let phpPollTimer = null;
+
+let phpPollTimestamp = 0;
+
+let phpPolling = false;
+
+
+// =====================================================
+// WEBRTC
+// =====================================================
+
 let hostPeerConnection = null;
 
-// One peer connection for every other participant.
 let participantPeerConnections = {};
 
 let participantNames = {};
@@ -1262,6 +1187,7 @@ const rtcConfiguration = {
     ]
 
 };
+
 
 let currentPollId = null;
 
@@ -1400,7 +1326,7 @@ async function joinWebinar() {
 
         await startCamera();
 
-        connectWebSocket();
+        connectPHPSignaling();
 
     }
 
@@ -1472,166 +1398,825 @@ async function startCamera() {
 
 
 // =====================================================
-// WEBSOCKET
+// PHP SIGNALING
 // =====================================================
 
-function connectWebSocket() {
+async function connectPHPSignaling() {
 
-    const protocol =
-        location.protocol === "https:"
-            ? "wss:"
-            : "ws:";
-
-    socket =
-        new WebSocket(
-            `${protocol}//${location.host}/ws/${webinarId}`
+    const status =
+        document.getElementById(
+            "connectionStatus"
         );
 
-    socket.onopen =
-        function() {
+    if (status) {
 
-            document
-                .getElementById(
-                    "connectionStatus"
-                )
-                .className =
+        status.className =
+            "badge bg-warning";
+
+        status.textContent =
+            "PHP Connecting...";
+
+    }
+
+    phpPollTimestamp =
+        0;
+
+    phpPolling =
+        true;
+
+    const result =
+        await sendPHPSignal({
+
+            type:
+                "participant_ready",
+
+            role:
+                "participant",
+
+            participant_id:
+                participantId,
+
+            participant_name:
+                participantName
+
+        });
+
+    if (
+        result &&
+        result.success
+    ) {
+
+        if (status) {
+
+            status.className =
                 "badge bg-success";
 
-            document
-                .getElementById(
-                    "connectionStatus"
-                )
-                .textContent =
-                "Connected 🟢";
+            status.textContent =
+                "PHP Connected 🟢";
 
-            // Tell the backend that this participant's
-            // WebSocket is now ready.
-            socket.send(
-                JSON.stringify({
+        }
 
-                    type:
-                        "webrtc_ready",
+    }
+    else {
 
-                    role:
-                        "participant",
+        if (status) {
 
-                    participant_id:
-                        participantId
-
-                })
-            );
-
-        };
-
-    socket.onclose =
-        function() {
-
-            document
-                .getElementById(
-                    "connectionStatus"
-                )
-                .className =
+            status.className =
                 "badge bg-danger";
 
-            document
-                .getElementById(
-                    "connectionStatus"
-                )
-                .textContent =
-                "Disconnected 🔴";
+            status.textContent =
+                "PHP Error 🔴";
 
-        };
+        }
 
-    socket.onerror =
-        function(error) {
+    }
 
-            console.error(
-                "WebSocket:",
-                error
+    pollPHPSignals();
+
+}
+
+
+// =====================================================
+// SEND PHP SIGNAL
+// =====================================================
+
+async function sendPHPSignal(
+    message
+) {
+
+    if (
+        !webinarId
+    ) {
+
+        return null;
+
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                `${PHP_BASE_URL}/signal.php`,
+                {
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            webinar_id:
+                                webinarId,
+
+                            sender_id:
+                                participantId,
+
+                            ...message
+
+                        })
+                }
             );
 
-        };
+        const data =
+            await response.json();
 
-    socket.onmessage =
-        async function(event) {
+        if (
+            !response.ok ||
+            !data.success
+        ) {
 
-            const data =
-                JSON.parse(
-                    event.data
-                );
+            console.error(
+                "PHP signal error:",
+                data
+            );
 
-            // ==========================================
-            // CURRENT PARTICIPANT ROSTER
-            // ==========================================
+            return null;
 
-            if (
-                data.type ===
-                "participant_roster"
+        }
+
+        return data;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "PHP signaling error:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// =====================================================
+// POLL PHP SIGNALS
+// =====================================================
+
+async function pollPHPSignals() {
+
+    if (
+        !phpPolling ||
+        !webinarId
+    ) {
+
+        return;
+
+    }
+
+    try {
+
+        const url =
+            `${PHP_BASE_URL}/poll.php?webinar_id=${encodeURIComponent(webinarId)}` +
+            `&receiver_id=${encodeURIComponent(participantId)}` +
+            `&after=${encodeURIComponent(phpPollTimestamp)}`;
+
+        const response =
+            await fetch(
+                url,
+                {
+                    cache:
+                        "no-store"
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            data.success
+        ) {
+
+            const signals =
+                data.signals || [];
+
+            for (
+                const signal
+                of signals
             ) {
 
-                const participants =
-                    data.participants || [];
+                await handlePHPSignal(
+                    signal
+                );
 
-                for (
-                    const participant
-                    of participants
-                ) {
+            }
 
-                    const id =
-                        Number(
-                            participant.participant_id
-                        );
+            if (
+                typeof data.timestamp ===
+                "number" &&
+                data.timestamp >
+                phpPollTimestamp
+            ) {
 
-                    if (
-                        id ===
-                        participantId
-                    ) {
+                phpPollTimestamp =
+                    data.timestamp;
 
-                        continue;
+            }
 
-                    }
+        }
 
-                    participantNames[id] =
-                        participant.participant_name;
+    }
 
-                    addParticipant(
-                        id,
-                        participant.participant_name
-                    );
+    catch (error) {
 
-                    // Lower participant ID is the deterministic
-                    // offerer. This prevents offer collisions.
-                    if (
-                        participantId <
-                        id
-                    ) {
+        console.error(
+            "PHP polling error:",
+            error
+        );
 
-                        await createParticipantPeerConnection(
-                            id,
-                            true
-                        );
+    }
 
-                    }
+    finally {
 
-                }
+        if (
+            phpPolling
+        ) {
+
+            phpPollTimer =
+                setTimeout(
+                    pollPHPSignals,
+                    300
+                );
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// HANDLE PHP SIGNAL
+// =====================================================
+
+async function handlePHPSignal(
+    data
+) {
+
+    if (
+        !data ||
+        !data.type
+    ) {
+
+        return;
+
+    }
+
+
+    // ================================================
+    // PARTICIPANT ROSTER
+    // ================================================
+
+    if (
+        data.type ===
+        "participant_roster"
+    ) {
+
+        const participants =
+            data.participants || [];
+
+        for (
+            const participant
+            of participants
+        ) {
+
+            const id =
+                Number(
+                    participant.participant_id
+                );
+
+            if (
+                id ===
+                participantId
+            ) {
+
+                continue;
+
+            }
+
+            participantNames[id] =
+                participant.participant_name;
+
+            addParticipant(
+                id,
+                participant.participant_name
+            );
+
+            /*
+             * Deterministic offerer:
+             * lower participant ID creates offer.
+             */
+
+            if (
+                participantId <
+                id
+            ) {
+
+                await createParticipantPeerConnection(
+                    id,
+                    true
+                );
+
+            }
+
+        }
+
+        return;
+
+    }
+
+
+    // ================================================
+    // PARTICIPANT JOINED
+    // ================================================
+
+    if (
+        data.type ===
+        "participant_joined"
+    ) {
+
+        const id =
+            Number(
+                data.participant_id
+            );
+
+        if (
+            data.participant_count !==
+            undefined
+        ) {
+
+            document
+                .getElementById(
+                    "participantCount"
+                )
+                .textContent =
+                data.participant_count;
+
+        }
+
+        if (
+            id !==
+            participantId
+        ) {
+
+            participantNames[id] =
+                data.participant_name;
+
+            addParticipant(
+                id,
+                data.participant_name
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    // ================================================
+    // PARTICIPANT READY
+    // ================================================
+
+    if (
+        data.type ===
+        "participant_ready" &&
+        data.role ===
+        "participant"
+    ) {
+
+        const id =
+            Number(
+                data.participant_id
+            );
+
+        if (
+            id !==
+            participantId
+        ) {
+
+            participantNames[id] =
+                data.participant_name ||
+                participantNames[id] ||
+                "Participant";
+
+            addParticipant(
+                id,
+                participantNames[id]
+            );
+
+            if (
+                participantId <
+                id
+            ) {
+
+                await createParticipantPeerConnection(
+                    id,
+                    true
+                );
+
+            }
+
+        }
+
+        return;
+
+    }
+
+
+    // ================================================
+    // HOST OFFER
+    // ================================================
+
+    if (
+        data.type ===
+        "webrtc_offer" &&
+
+        data.role ===
+        "host" &&
+
+        data.target_role ===
+        "participant"
+    ) {
+
+        if (
+            Number(
+                data.participant_id
+            )
+            !==
+            Number(
+                participantId
+            )
+        ) {
+
+            return;
+
+        }
+
+        await handleHostOffer(
+            data.offer
+        );
+
+        return;
+
+    }
+
+
+    // ================================================
+    // HOST ICE
+    // ================================================
+
+    if (
+        data.type ===
+        "webrtc_ice" &&
+
+        data.role ===
+        "host" &&
+
+        data.target_role ===
+        "participant"
+    ) {
+
+        if (
+            Number(
+                data.participant_id
+            )
+            !==
+            Number(
+                participantId
+            )
+        ) {
+
+            return;
+
+        }
+
+        await handleHostIce(
+            data.candidate
+        );
+
+        return;
+
+    }
+
+
+    // ================================================
+    // HOST ANSWER TO PARTICIPANT
+    // ================================================
+
+    if (
+        data.type ===
+        "webrtc_answer" &&
+
+        data.role ===
+        "participant" &&
+
+        data.target_role ===
+        "host"
+    ) {
+
+        if (
+            Number(
+                data.participant_id
+            )
+            !==
+            Number(
+                participantId
+            )
+        ) {
+
+            return;
+
+        }
+
+        if (
+            hostPeerConnection &&
+            data.answer
+        ) {
+
+            try {
+
+                await hostPeerConnection.setRemoteDescription(
+                    new RTCSessionDescription(
+                        data.answer
+                    )
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Host answer error:",
+                    error
+                );
+
+            }
+
+        }
+
+        return;
+
+    }
+
+
+    // ================================================
+    // PARTICIPANT OFFER
+    // ================================================
+
+    if (
+        data.type ===
+        "webrtc_offer" &&
+
+        data.role ===
+        "participant" &&
+
+        data.target_role ===
+        "participant"
+    ) {
+
+        const fromId =
+            Number(
+                data.from_participant_id
+            );
+
+        const toId =
+            Number(
+                data.to_participant_id
+            );
+
+        if (
+            toId !==
+            participantId
+        ) {
+
+            return;
+
+        }
+
+        if (
+            !fromId ||
+            fromId ===
+            participantId
+        ) {
+
+            return;
+
+        }
+
+        participantNames[fromId] =
+            data.from_participant_name ||
+            participantNames[fromId] ||
+            "Participant";
+
+        addParticipant(
+            fromId,
+            participantNames[fromId]
+        );
+
+        await handleParticipantOffer(
+            fromId,
+            data.offer
+        );
+
+        return;
+
+    }
+
+
+    // ================================================
+    // PARTICIPANT ANSWER
+    // ================================================
+
+    if (
+        data.type ===
+        "webrtc_answer" &&
+
+        data.role ===
+        "participant" &&
+
+        data.target_role ===
+        "participant"
+    ) {
+
+        const fromId =
+            Number(
+                data.from_participant_id
+            );
+
+        const toId =
+            Number(
+                data.to_participant_id
+            );
+
+        if (
+            toId !==
+            participantId
+        ) {
+
+            return;
+
+        }
+
+        const pc =
+            participantPeerConnections[
+                fromId
+            ];
+
+        if (
+            pc &&
+            data.answer
+        ) {
+
+            try {
+
+                await pc.setRemoteDescription(
+                    new RTCSessionDescription(
+                        data.answer
+                    )
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Participant answer error:",
+                    error
+                );
+
+            }
+
+        }
+
+        return;
+
+    }
+
+
+    // ================================================
+    // PARTICIPANT ICE
+    // ================================================
+
+    if (
+        data.type ===
+        "webrtc_ice"
+    ) {
+
+        if (
+            data.role ===
+            "host" &&
+            data.target_role ===
+            "participant"
+        ) {
+
+            if (
+                Number(
+                    data.participant_id
+                )
+                ===
+                Number(
+                    participantId
+                )
+            ) {
+
+                await handleHostIce(
+                    data.candidate
+                );
+
+            }
+
+            return;
+
+        }
+
+
+        if (
+            data.role ===
+            "participant" &&
+            data.target_role ===
+            "participant"
+        ) {
+
+            const fromId =
+                Number(
+                    data.from_participant_id
+                );
+
+            const toId =
+                Number(
+                    data.to_participant_id
+                );
+
+            if (
+                toId !==
+                Number(
+                    participantId
+                )
+            ) {
 
                 return;
 
             }
 
-            // ==========================================
-            // PARTICIPANT JOINED
-            // ==========================================
+            await handleParticipantIce(
+                fromId,
+                data.candidate
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    // ================================================
+    // PARTICIPANT LEFT
+    // ================================================
+
+    if (
+        data.type ===
+        "participant_left"
+    ) {
+
+        const id =
+            Number(
+                data.participant_id
+            );
+
+        const name =
+            data.participant_name ||
+            "Participant";
+
+        if (
+            id !==
+            Number(
+                participantId
+            )
+        ) {
+
+            delete participantNames[id];
+
+            removeParticipantVideo(
+                id
+            );
+
+            removeParticipant(
+                id
+            );
 
             if (
-                data.type ===
-                "participant_joined"
+                data.participant_count !==
+                undefined
             ) {
-
-                const id =
-                    Number(
-                        data.participant_id
-                    );
 
                 document
                     .getElementById(
@@ -1640,521 +2225,135 @@ function connectWebSocket() {
                     .textContent =
                     data.participant_count;
 
-                if (
-                    id !==
-                    participantId
-                ) {
-
-                    participantNames[id] =
-                        data.participant_name;
-
-                    addParticipant(
-                        id,
-                        data.participant_name
-                    );
-
-                }
-
             }
 
-            // ==========================================
-            // PARTICIPANT READY
-            // ==========================================
-            // The new participant's WebSocket is now live.
-            // Existing participants can safely negotiate with it.
-
-            if (
-                data.type ===
-                "participant_ready" &&
-                data.role ===
-                "participant"
-            ) {
-
-                const id =
-                    Number(
-                        data.participant_id
-                    );
-
-                if (
-                    id !==
-                    participantId
-                ) {
-
-                    participantNames[id] =
-                        data.participant_name;
-
-                    addParticipant(
-                        id,
-                        data.participant_name
-                    );
-
-                    if (
-                        participantId <
-                        id
-                    ) {
-
-                        await createParticipantPeerConnection(
-                            id,
-                            true
-                        );
-
-                    }
-
-                }
-
-            }
-
-            // ==========================================
-            // HOST OFFER
-            // ==========================================
-
-            if (
-                data.type ===
-                "webrtc_offer" &&
-                data.role ===
-                "host" &&
-                data.target_role ===
-                "participant"
-            ) {
-
-                if (
-                    Number(
-                        data.participant_id
-                    )
-                    !==
-                    participantId
-                ) {
-
-                    return;
-
-                }
-
-                await handleHostOffer(
-                    data.offer
-                );
-
-            }
-
-            // ==========================================
-            // HOST ICE
-            // ==========================================
-
-            if (
-                data.type ===
-                "webrtc_ice" &&
-                data.role ===
-                "host" &&
-                data.target_role ===
-                "participant"
-            ) {
-
-                if (
-                    Number(
-                        data.participant_id
-                    )
-                    !==
-                    participantId
-                ) {
-
-                    return;
-
-                }
+            showLeaveNotification(
+                `${name} left the webinar`
+            );
 
-                await handleHostIce(
-                    data.candidate
-                );
+        }
 
-            }
+        return;
 
-            // ==========================================
-            // HOST ANSWER TO PARTICIPANT
-            // ==========================================
+    }
 
-            if (
-                data.type ===
-                "webrtc_answer" &&
-                data.role ===
-                "participant" &&
-                data.target_role ===
-                "host"
-            ) {
 
-                if (
-                    Number(
-                        data.participant_id
-                    )
-                    !==
-                    participantId
-                ) {
+    // ================================================
+    // CHAT
+    // ================================================
 
-                    return;
+    if (
+        data.type ===
+        "chat_message"
+    ) {
 
-                }
-
-                if (
-                    hostPeerConnection &&
-                    data.answer
-                ) {
-
-                    try {
+        addChatMessage(
+            data.participant_name,
+            data.message
+        );
 
-                        await hostPeerConnection.setRemoteDescription(
-                            new RTCSessionDescription(
-                                data.answer
-                            )
-                        );
-
-                    }
-
-                    catch (error) {
-
-                        console.error(
-                            "Host answer error:",
-                            error
-                        );
+        return;
 
-                    }
-
-                }
+    }
 
-            }
-
-            // ==========================================
-            // PARTICIPANT OFFER
-            // ==========================================
 
-            if (
-                data.type ===
-                "webrtc_offer" &&
-                data.role ===
-                "participant" &&
-                data.target_role ===
-                "participant"
-            ) {
+    // ================================================
+    // REACTION
+    // ================================================
 
-                const fromId =
-                    Number(
-                        data.from_participant_id
-                    );
+    if (
+        data.type ===
+        "reaction"
+    ) {
 
-                const toId =
-                    Number(
-                        data.to_participant_id
-                    );
+        addChatMessage(
+            data.participant_name,
+            `reacted ${data.reaction}`
+        );
 
-                if (
-                    toId !==
-                    participantId
-                ) {
+        showFloatingReaction(
+            data.reaction
+        );
 
-                    return;
+        return;
 
-                }
+    }
 
-                if (
-                    !fromId ||
-                    fromId ===
-                    participantId
-                ) {
 
-                    return;
+    // ================================================
+    // POLL
+    // ================================================
 
-                }
+    if (
+        data.type ===
+        "poll_created"
+    ) {
 
-                participantNames[fromId] =
-                    data.from_participant_name ||
-                    participantNames[fromId] ||
-                    "Participant";
+        showPoll(
+            data
+        );
 
-                addParticipant(
-                    fromId,
-                    participantNames[fromId]
-                );
-
-                await handleParticipantOffer(
-                    fromId,
-                    data.offer
-                );
+        return;
 
-            }
+    }
 
-            // ==========================================
-            // PARTICIPANT ANSWER
-            // ==========================================
 
-            if (
-                data.type ===
-                "webrtc_answer" &&
-                data.role ===
-                "participant" &&
-                data.target_role ===
-                "participant"
-            ) {
-
-                const fromId =
-                    Number(
-                        data.from_participant_id
-                    );
-
-                const toId =
-                    Number(
-                        data.to_participant_id
-                    );
+    // ================================================
+    // POLL VOTE
+    // ================================================
 
-                if (
-                    toId !==
-                    participantId
-                ) {
+    if (
+        data.type ===
+        "poll_vote"
+    ) {
 
-                    return;
+        addPollResult(
+            data
+        );
 
-                }
+        return;
 
-                const pc =
-                    participantPeerConnections[
-                        fromId
-                    ];
+    }
 
-                if (
-                    pc &&
-                    data.answer
-                ) {
 
-                    try {
+    // ================================================
+    // QUESTION
+    // ================================================
 
-                        await pc.setRemoteDescription(
-                            new RTCSessionDescription(
-                                data.answer
-                            )
-                        );
+    if (
+        data.type ===
+        "question"
+    ) {
 
-                    }
+        addQuestion(
+            data
+        );
 
-                    catch (error) {
+        return;
 
-                        console.error(
-                            "Participant answer error:",
-                            error
-                        );
+    }
 
-                    }
 
-                }
+    // ================================================
+    // QUESTION ANSWERED
+    // ================================================
 
-            }
+    if (
+        data.type ===
+        "question_answered"
+    ) {
 
-            // ==========================================
-            // PARTICIPANT ICE
-            // ==========================================
+        const message =
+            document.getElementById(
+                "questionMessage"
+            );
 
-            if (
-                data.type ===
-                "webrtc_ice"
-            ) {
+        message.textContent =
+            "Question answered by host.";
 
-                if (
-                    data.role ===
-                    "host" &&
-                    data.target_role ===
-                    "participant"
-                ) {
+        return;
 
-                    if (
-                        Number(
-                            data.participant_id
-                        )
-                        ===
-                        participantId
-                    ) {
-
-                        await handleHostIce(
-                            data.candidate
-                        );
-
-                    }
-
-                }
-
-                if (
-                    data.role ===
-                    "participant" &&
-                    data.target_role ===
-                    "participant"
-                ) {
-
-                    const fromId =
-                        Number(
-                            data.from_participant_id
-                        );
-
-                    const toId =
-                        Number(
-                            data.to_participant_id
-                        );
-
-                    if (
-                        toId !==
-                        participantId
-                    ) {
-
-                        return;
-
-                    }
-
-                    await handleParticipantIce(
-                        fromId,
-                        data.candidate
-                    );
-
-                }
-
-            }
-
-            // ==========================================
-            // PARTICIPANT LEFT
-            // ==========================================
-
-            if (
-                data.type ===
-                "participant_left"
-            ) {
-
-                const id =
-                    Number(
-                        data.participant_id
-                    );
-
-                const name =
-                    data.participant_name ||
-                    "Participant";
-
-                if (
-                    id !==
-                    participantId
-                ) {
-
-                    delete participantNames[id];
-
-                    removeParticipantVideo(id);
-
-                    removeParticipant(id);
-
-                    document
-                        .getElementById(
-                            "participantCount"
-                        )
-                        .textContent =
-                        data.participant_count || 0;
-
-                    showLeaveNotification(
-                        `${name} left the webinar`
-                    );
-
-                }
-
-            }
-
-            // ==========================================
-            // CHAT
-            // ==========================================
-
-            if (
-                data.type ===
-                "chat_message"
-            ) {
-
-                addChatMessage(
-                    data.participant_name,
-                    data.message
-                );
-
-            }
-
-            // ==========================================
-            // REACTION
-            // ==========================================
-
-            if (
-                data.type ===
-                "reaction"
-            ) {
-
-                addChatMessage(
-                    data.participant_name,
-                    `reacted ${data.reaction}`
-                );
-
-                showFloatingReaction(
-                    data.reaction
-                );
-
-            }
-
-            // ==========================================
-            // POLL
-            // ==========================================
-
-            if (
-                data.type ===
-                "poll_created"
-            ) {
-
-                showPoll(
-                    data
-                );
-
-            }
-
-            // ==========================================
-            // POLL VOTE
-            // ==========================================
-
-            if (
-                data.type ===
-                "poll_vote"
-            ) {
-
-                addPollResult(
-                    data
-                );
-
-            }
-
-            // ==========================================
-            // QUESTION
-            // ==========================================
-
-            if (
-                data.type ===
-                "question"
-            ) {
-
-                addQuestion(
-                    data
-                );
-
-            }
-
-            // ==========================================
-            // ANSWERED
-            // ==========================================
-
-            if (
-                data.type ===
-                "question_answered"
-            ) {
-
-                const message =
-                    document.getElementById(
-                        "questionMessage"
-                    );
-
-                message.textContent =
-                    "Question answered by host.";
-
-            }
-
-        };
+    }
 
 }
 
@@ -2181,6 +2380,7 @@ async function createHostPeerConnection() {
     addLocalTracks(
         hostPeerConnection
     );
+
 
     hostPeerConnection.ontrack =
         function(event) {
@@ -2214,40 +2414,37 @@ async function createHostPeerConnection() {
 
         };
 
+
     hostPeerConnection.onicecandidate =
         function(event) {
 
             if (
-                event.candidate &&
-                socket &&
-                socket.readyState ===
-                WebSocket.OPEN
+                event.candidate
             ) {
 
-                socket.send(
-                    JSON.stringify({
+                sendPHPSignal({
 
-                        type:
-                            "webrtc_ice",
+                    type:
+                        "webrtc_ice",
 
-                        role:
-                            "participant",
+                    role:
+                        "participant",
 
-                        target_role:
-                            "host",
+                    target_role:
+                        "host",
 
-                        participant_id:
-                            participantId,
+                    participant_id:
+                        participantId,
 
-                        candidate:
-                            event.candidate
+                    candidate:
+                        event.candidate
 
-                    })
-                );
+                });
 
             }
 
         };
+
 
     hostPeerConnection.onconnectionstatechange =
         function() {
@@ -2257,7 +2454,30 @@ async function createHostPeerConnection() {
                 hostPeerConnection.connectionState
             );
 
+            const state =
+                hostPeerConnection.connectionState;
+
+            if (
+                state ===
+                "connected"
+            ) {
+
+                const waiting =
+                    document.getElementById(
+                        "waiting"
+                    );
+
+                if (waiting) {
+
+                    waiting.style.display =
+                        "none";
+
+                }
+
+            }
+
         };
+
 
     return hostPeerConnection;
 
@@ -2281,12 +2501,15 @@ async function createParticipantPeerConnection(
     if (
         !id ||
         id ===
-        participantId
+        Number(
+            participantId
+        )
     ) {
 
         return null;
 
     }
+
 
     if (
         participantPeerConnections[id]
@@ -2294,8 +2517,9 @@ async function createParticipantPeerConnection(
 
         if (
             createOffer &&
-            participantPeerConnections[id].signalingState ===
-            "stable"
+            participantPeerConnections[id]
+                .signalingState ===
+                "stable"
         ) {
 
             await sendParticipantOffer(
@@ -2309,6 +2533,7 @@ async function createParticipantPeerConnection(
 
     }
 
+
     const pc =
         new RTCPeerConnection(
             rtcConfiguration
@@ -2316,6 +2541,7 @@ async function createParticipantPeerConnection(
 
     participantPeerConnections[id] =
         pc;
+
 
     if (
         !pendingParticipantIceCandidates[id]
@@ -2326,9 +2552,11 @@ async function createParticipantPeerConnection(
 
     }
 
+
     addLocalTracks(
         pc
     );
+
 
     pc.ontrack =
         function(event) {
@@ -2351,46 +2579,43 @@ async function createParticipantPeerConnection(
 
         };
 
+
     pc.onicecandidate =
         function(event) {
 
             if (
-                event.candidate &&
-                socket &&
-                socket.readyState ===
-                WebSocket.OPEN
+                event.candidate
             ) {
 
-                socket.send(
-                    JSON.stringify({
+                sendPHPSignal({
 
-                        type:
-                            "webrtc_ice",
+                    type:
+                        "webrtc_ice",
 
-                        role:
-                            "participant",
+                    role:
+                        "participant",
 
-                        target_role:
-                            "participant",
+                    target_role:
+                        "participant",
 
-                        from_participant_id:
-                            participantId,
+                    from_participant_id:
+                        participantId,
 
-                        to_participant_id:
-                            id,
+                    to_participant_id:
+                        id,
 
-                        from_participant_name:
-                            participantName,
+                    from_participant_name:
+                        participantName,
 
-                        candidate:
-                            event.candidate
+                    candidate:
+                        event.candidate
 
-                    })
-                );
+                });
 
             }
 
         };
+
 
     pc.onconnectionstatechange =
         function() {
@@ -2420,6 +2645,7 @@ async function createParticipantPeerConnection(
 
         };
 
+
     if (
         createOffer
     ) {
@@ -2430,6 +2656,7 @@ async function createParticipantPeerConnection(
         );
 
     }
+
 
     return pc;
 
@@ -2496,42 +2723,33 @@ async function sendParticipantOffer(
             offer
         );
 
-        if (
-            socket &&
-            socket.readyState ===
-            WebSocket.OPEN
-        ) {
 
-            socket.send(
-                JSON.stringify({
+        sendPHPSignal({
 
-                    type:
-                        "webrtc_offer",
+            type:
+                "webrtc_offer",
 
-                    role:
-                        "participant",
+            role:
+                "participant",
 
-                    target_role:
-                        "participant",
+            target_role:
+                "participant",
 
-                    from_participant_id:
-                        participantId,
+            from_participant_id:
+                participantId,
 
-                    to_participant_id:
-                        Number(
-                            remoteParticipantId
-                        ),
+            to_participant_id:
+                Number(
+                    remoteParticipantId
+                ),
 
-                    from_participant_name:
-                        participantName,
+            from_participant_name:
+                participantName,
 
-                    offer:
-                        pc.localDescription
+            offer:
+                pc.localDescription
 
-                })
-            );
-
-        }
+        });
 
     }
 
@@ -2555,8 +2773,18 @@ async function handleHostOffer(
     offer
 ) {
 
+    if (
+        !offer
+    ) {
+
+        return;
+
+    }
+
+
     const pc =
         await createHostPeerConnection();
+
 
     try {
 
@@ -2566,37 +2794,47 @@ async function handleHostOffer(
             )
         );
 
+
         const answer =
             await pc.createAnswer();
+
 
         await pc.setLocalDescription(
             answer
         );
 
-        socket.send(
-            JSON.stringify({
 
-                type:
-                    "webrtc_answer",
+        sendPHPSignal({
 
-                role:
-                    "participant",
+            type:
+                "webrtc_answer",
 
-                target_role:
-                    "host",
+            role:
+                "participant",
 
-                participant_id:
-                    participantId,
+            target_role:
+                "host",
 
-                answer:
-                    pc.localDescription
+            participant_id:
+                participantId,
 
-            })
-        );
+            answer:
+                pc.localDescription
+
+        });
+
+
+        const pending =
+            pendingHostIceCandidates;
+
+
+        pendingHostIceCandidates =
+            [];
+
 
         for (
             const candidate
-            of pendingHostIceCandidates
+            of pending
         ) {
 
             try {
@@ -2617,8 +2855,6 @@ async function handleHostOffer(
             }
 
         }
-
-        pendingHostIceCandidates = [];
 
     }
 
@@ -2648,11 +2884,20 @@ async function handleParticipantOffer(
             remoteParticipantId
         );
 
+
     const pc =
         await createParticipantPeerConnection(
             id,
             false
         );
+
+
+    if (!pc) {
+
+        return;
+
+    }
+
 
     try {
 
@@ -2662,43 +2907,50 @@ async function handleParticipantOffer(
             )
         );
 
+
         const answer =
             await pc.createAnswer();
+
 
         await pc.setLocalDescription(
             answer
         );
 
-        socket.send(
-            JSON.stringify({
 
-                type:
-                    "webrtc_answer",
+        sendPHPSignal({
 
-                role:
-                    "participant",
+            type:
+                "webrtc_answer",
 
-                target_role:
-                    "participant",
+            role:
+                "participant",
 
-                from_participant_id:
-                    participantId,
+            target_role:
+                "participant",
 
-                to_participant_id:
-                    id,
+            from_participant_id:
+                participantId,
 
-                from_participant_name:
-                    participantName,
+            to_participant_id:
+                id,
 
-                answer:
-                    pc.localDescription
+            from_participant_name:
+                participantName,
 
-            })
-        );
+            answer:
+                pc.localDescription
+
+        });
+
 
         const pending =
             pendingParticipantIceCandidates[id] ||
             [];
+
+
+        pendingParticipantIceCandidates[id] =
+            [];
+
 
         for (
             const candidate
@@ -2723,9 +2975,6 @@ async function handleParticipantOffer(
             }
 
         }
-
-        pendingParticipantIceCandidates[id] =
-            [];
 
     }
 
@@ -2757,10 +3006,12 @@ async function handleHostIce(
 
     }
 
+
     const candidate =
         new RTCIceCandidate(
             candidateData
         );
+
 
     if (
         hostPeerConnection &&
@@ -2815,18 +3066,22 @@ async function handleParticipantIce(
 
     }
 
+
     const id =
         Number(
             remoteParticipantId
         );
+
 
     const candidate =
         new RTCIceCandidate(
             candidateData
         );
 
+
     const pc =
         participantPeerConnections[id];
+
 
     if (
         pc &&
@@ -2888,10 +3143,12 @@ function createRemoteVideo(
             ? "remote-video-host"
             : `remote-video-${remoteId}`;
 
+
     let tile =
         document.getElementById(
             tileId
         );
+
 
     if (!tile) {
 
@@ -2922,6 +3179,7 @@ function createRemoteVideo(
             </div>
             `;
 
+
         document
             .getElementById(
                 "participantVideoGrid"
@@ -2932,10 +3190,12 @@ function createRemoteVideo(
 
     }
 
+
     const video =
         tile.querySelector(
             "video"
         );
+
 
     if (
         video.srcObject !==
@@ -2967,16 +3227,19 @@ function removeParticipantVideo(
             ? "remote-video-host"
             : `remote-video-${remoteId}`;
 
+
     const tile =
         document.getElementById(
             tileId
         );
+
 
     if (tile) {
 
         tile.remove();
 
     }
+
 
     if (
         remoteId !==
@@ -2988,6 +3251,7 @@ function removeParticipantVideo(
                 remoteId
             );
 
+
         if (
             participantPeerConnections[id]
         ) {
@@ -2995,6 +3259,7 @@ function removeParticipantVideo(
             participantPeerConnections[id].close();
 
         }
+
 
         delete participantPeerConnections[id];
 
@@ -3016,11 +3281,13 @@ function removeHostConnection() {
             "remote-video-host"
         );
 
+
     if (tile) {
 
         tile.remove();
 
     }
+
 
     if (
         hostPeerConnection
@@ -3029,6 +3296,7 @@ function removeHostConnection() {
         hostPeerConnection.close();
 
     }
+
 
     hostPeerConnection =
         null;
@@ -3050,6 +3318,7 @@ function addParticipant(
             "participantList"
         );
 
+
     if (
         !list
     ) {
@@ -3058,10 +3327,12 @@ function addParticipant(
 
     }
 
+
     const existing =
         list.querySelector(
             `[data-participant-id="${id}"]`
         );
+
 
     if (
         existing
@@ -3071,16 +3342,20 @@ function addParticipant(
 
     }
 
+
     const item =
         document.createElement(
             "div"
         );
 
+
     item.className =
         "participant-item";
 
+
     item.dataset.participantId =
         id;
+
 
     item.innerHTML =
         `
@@ -3098,6 +3373,7 @@ function addParticipant(
 
         </span>
         `;
+
 
     list.appendChild(
         item
@@ -3122,6 +3398,7 @@ async function toggleScreenShare() {
 
     }
 
+
     try {
 
         screenStream =
@@ -3133,11 +3410,14 @@ async function toggleScreenShare() {
 
             });
 
+
         const screenTrack =
             screenStream.getVideoTracks()[0];
 
+
         const allPeerConnections =
             [];
+
 
         if (
             hostPeerConnection
@@ -3148,6 +3428,7 @@ async function toggleScreenShare() {
             );
 
         }
+
 
         Object.values(
             participantPeerConnections
@@ -3160,6 +3441,7 @@ async function toggleScreenShare() {
 
             }
         );
+
 
         allPeerConnections.forEach(
             function(pc) {
@@ -3179,6 +3461,7 @@ async function toggleScreenShare() {
                             }
                         );
 
+
                 if (sender) {
 
                     sender.replaceTrack(
@@ -3189,6 +3472,7 @@ async function toggleScreenShare() {
 
             }
         );
+
 
         screenTrack.onended =
             function() {
@@ -3225,6 +3509,7 @@ function stopScreenShare() {
 
     }
 
+
     screenStream
         .getTracks()
         .forEach(
@@ -3235,9 +3520,11 @@ function stopScreenShare() {
             }
         );
 
+
     const cameraTrack =
         localStream
-            .getVideoTracks()[0];
+            ?.getVideoTracks()[0];
+
 
     if (
         cameraTrack
@@ -3245,6 +3532,7 @@ function stopScreenShare() {
 
         const allPeerConnections =
             [];
+
 
         if (
             hostPeerConnection
@@ -3255,6 +3543,7 @@ function stopScreenShare() {
             );
 
         }
+
 
         Object.values(
             participantPeerConnections
@@ -3267,6 +3556,7 @@ function stopScreenShare() {
 
             }
         );
+
 
         allPeerConnections.forEach(
             function(pc) {
@@ -3286,6 +3576,7 @@ function stopScreenShare() {
                             }
                         );
 
+
                 if (sender) {
 
                     sender.replaceTrack(
@@ -3299,17 +3590,18 @@ function stopScreenShare() {
 
     }
 
+
     screenStream =
         null;
 
 }
+
 
 // =====================================================
 // CHAT
 // =====================================================
 
 async function sendChat() {
-
 
     const input =
         document.getElementById(
@@ -3321,7 +3613,9 @@ async function sendChat() {
         input.value.trim();
 
 
-    if (!message) {
+    if (
+        !message
+    ) {
 
         return;
 
@@ -3339,7 +3633,6 @@ async function sendChat() {
 
 
     try {
-
 
         const params =
             new URLSearchParams();
@@ -3359,16 +3652,11 @@ async function sendChat() {
 
         const response =
             await fetch(
-
                 `/webinars/${webinarId}/chat?${params.toString()}`,
-
                 {
-
                     method:
                         "POST"
-
                 }
-
             );
 
 
@@ -3391,9 +3679,21 @@ async function sendChat() {
         }
 
 
+        await sendPHPSignal({
+
+            type:
+                "chat_message",
+
+            participant_name:
+                participantName,
+
+            message:
+                message
+
+        });
+
         input.value =
             "";
-
 
     }
 
@@ -3418,7 +3718,6 @@ function handleChatKey(
     event
 ) {
 
-
     if (
         event.key ===
         "Enter"
@@ -3439,7 +3738,6 @@ function addChatMessage(
     name,
     message
 ) {
-
 
     const list =
         document.getElementById(
@@ -3471,7 +3769,6 @@ function addChatMessage(
 
 
     item.innerHTML =
-
         `
         <div class="chat-name">
 
@@ -3506,7 +3803,6 @@ async function sendReaction(
     reaction
 ) {
 
-
     if (
         !participantId ||
         !webinarId
@@ -3518,7 +3814,6 @@ async function sendReaction(
 
 
     try {
-
 
         const params =
             new URLSearchParams();
@@ -3538,16 +3833,11 @@ async function sendReaction(
 
         const response =
             await fetch(
-
                 `/webinars/${webinarId}/react?${params.toString()}`,
-
                 {
-
                     method:
                         "POST"
-
                 }
-
             );
 
 
@@ -3569,6 +3859,19 @@ async function sendReaction(
 
         }
 
+
+        await sendPHPSignal({
+
+            type:
+                "reaction",
+
+            participant_name:
+                participantName,
+
+            reaction:
+                reaction
+
+        });
 
         showFloatingReaction(
             reaction
@@ -3600,7 +3903,6 @@ async function sendReaction(
 function showFloatingReaction(
     reaction
 ) {
-
 
     const area =
         document.getElementById(
@@ -3647,7 +3949,6 @@ function showPoll(
     data
 ) {
 
-
     currentPollId =
         data.poll_id;
 
@@ -3682,9 +3983,17 @@ function showPoll(
         "";
 
 
+    if (
+        !data.options
+    ) {
+
+        return;
+
+    }
+
+
     data.options.forEach(
         function(option) {
-
 
             const button =
                 document.createElement(
@@ -3731,7 +4040,6 @@ async function votePoll(
     optionId
 ) {
 
-
     if (
         hasVoted
     ) {
@@ -3759,19 +4067,13 @@ async function votePoll(
 
     try {
 
-
         const response =
             await fetch(
-
                 `/polls/${pollId}/vote?${params.toString()}`,
-
                 {
-
                     method:
                         "POST"
-
                 }
-
             );
 
 
@@ -3785,7 +4087,8 @@ async function votePoll(
         ) {
 
             alert(
-                data.message
+                data.message ||
+                "Unable to vote."
             );
 
             return;
@@ -3811,6 +4114,25 @@ async function votePoll(
             );
 
 
+        await sendPHPSignal({
+
+            type:
+                "poll_vote",
+
+            poll_id:
+                pollId,
+
+            option_id:
+                optionId,
+
+            vote_count:
+                data.vote_count || 0,
+
+            participant_name:
+                participantName
+
+        });
+
         document
             .getElementById(
                 "pollResults"
@@ -3823,6 +4145,7 @@ async function votePoll(
     catch (error) {
 
         console.error(
+            "Poll:",
             error
         );
 
@@ -3834,7 +4157,6 @@ async function votePoll(
 function addPollResult(
     data
 ) {
-
 
     const results =
         document.getElementById(
@@ -3849,7 +4171,6 @@ function addPollResult(
 
 
     item.textContent =
-
         `${data.participant_name}: ${data.vote_count} vote(s)`;
 
 
@@ -3866,7 +4187,6 @@ function addPollResult(
 
 async function askQuestion() {
 
-
     const input =
         document.getElementById(
             "questionInput"
@@ -3877,7 +4197,9 @@ async function askQuestion() {
         input.value.trim();
 
 
-    if (!question) {
+    if (
+        !question
+    ) {
 
         return;
 
@@ -3902,19 +4224,13 @@ async function askQuestion() {
 
     try {
 
-
         const response =
             await fetch(
-
                 `/webinars/${webinarId}/questions?${params.toString()}`,
-
                 {
-
                     method:
                         "POST"
-
                 }
-
             );
 
 
@@ -3934,6 +4250,22 @@ async function askQuestion() {
             data.success
         ) {
 
+            await sendPHPSignal({
+
+                type:
+                    "question",
+
+                question_id:
+                    data.question_id,
+
+                participant_name:
+                    participantName,
+
+                question:
+                    question
+
+            });
+
             input.value =
                 "";
 
@@ -3944,8 +4276,10 @@ async function askQuestion() {
     catch (error) {
 
         console.error(
+            "Question:",
             error
         );
+
 
         document
             .getElementById(
@@ -3967,7 +4301,6 @@ function addQuestion(
     data
 ) {
 
-
     const list =
         document.getElementById(
             "questionList"
@@ -3985,7 +4318,6 @@ function addQuestion(
 
 
     item.innerHTML =
-
         `
         <div class="question-name">
 
@@ -4009,18 +4341,14 @@ function addQuestion(
 
 
 // =====================================================
-// SCREEN SHARE
-// =====================================================
-
-async 
-// =====================================================
 // MUTE
 // =====================================================
 
 function toggleMute() {
 
-
-    if (!localStream) {
+    if (
+        !localStream
+    ) {
 
         return;
 
@@ -4070,8 +4398,9 @@ function toggleMute() {
 
 function toggleCamera() {
 
-
-    if (!localStream) {
+    if (
+        !localStream
+    ) {
 
         return;
 
@@ -4116,80 +4445,18 @@ function toggleCamera() {
 
 
 // =====================================================
-// PARTICIPANT LIST
+// REMOVE PARTICIPANT
 // =====================================================
 
-function addParticipant(
-    id,
-    name
-) {
-
-
-    const list =
-        document.getElementById(
-            "participantList"
-        );
-
-
-    if (
-        list.querySelector(
-            `[data-participant-id="${id}"]`
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    const item =
-        document.createElement(
-            "div"
-        );
-
-
-    item.className =
-        "participant-item";
-
-
-    item.dataset.participantId =
-        id;
-
-
-    item.innerHTML =
-
-        `
-        <span>
-
-            <i class="bi bi-person-circle text-primary me-1"></i>
-
-            ${escapeHtml(name)}
-
-        </span>
-
-        <span class="badge bg-success">
-
-            Online
-
-        </span>
-        `;
-
-
-    list.appendChild(
-        item
-    );
-
-}
-
-
 function removeParticipant(
-    participantId
+    id
 ) {
 
     const item =
         document.querySelector(
-            `[data-participant-id="${participantId}"]`
+            `[data-participant-id="${id}"]`
         );
+
 
     if (item) {
 
@@ -4200,6 +4467,10 @@ function removeParticipant(
 }
 
 
+// =====================================================
+// LEAVE NOTIFICATION
+// =====================================================
+
 function showLeaveNotification(
     message
 ) {
@@ -4209,20 +4480,27 @@ function showLeaveNotification(
             "leaveNotification"
         );
 
+
     if (!notification) {
 
         return;
 
     }
 
+
     notification.textContent =
         `🔔 ${message}`;
 
-    notification.classList.add("show");
+
+    notification.classList.add(
+        "show"
+    );
+
 
     clearTimeout(
         window.leaveNotificationTimer
     );
+
 
     window.leaveNotificationTimer =
         setTimeout(
@@ -4246,7 +4524,6 @@ function showLeaveNotification(
 function showPanel(
     panel
 ) {
-
 
     const panels = {
 
@@ -4354,20 +4631,45 @@ function showPanel(
 
 function leaveWebinar() {
 
+    phpPolling =
+        false;
+
+
     if (
-        socket &&
-        socket.readyState === WebSocket.OPEN
+        phpPollTimer
     ) {
 
-        socket.send(
-            JSON.stringify({
-                type: "participant_left",
-                participant_id: participantId,
-                participant_name: participantName
-            })
+        clearTimeout(
+            phpPollTimer
         );
 
+        phpPollTimer =
+            null;
+
     }
+
+
+    /*
+     * Tell PHP signaling system that the
+     * participant is leaving.
+     */
+
+    sendPHPSignal({
+
+        type:
+            "participant_left",
+
+        role:
+            "participant",
+
+        participant_id:
+            participantId,
+
+        participant_name:
+            participantName
+
+    });
+
 
     if (
         hostPeerConnection
@@ -4377,8 +4679,10 @@ function leaveWebinar() {
 
     }
 
+
     hostPeerConnection =
         null;
+
 
     Object.values(
         participantPeerConnections
@@ -4390,9 +4694,14 @@ function leaveWebinar() {
         }
     );
 
-    participantPeerConnections = {};
 
-    if (screenStream) {
+    participantPeerConnections =
+        {};
+
+
+    if (
+        screenStream
+    ) {
 
         screenStream
             .getTracks()
@@ -4409,7 +4718,10 @@ function leaveWebinar() {
 
     }
 
-    if (localStream) {
+
+    if (
+        localStream
+    ) {
 
         localStream
             .getTracks()
@@ -4421,19 +4733,23 @@ function leaveWebinar() {
                 }
             );
 
-    }
-
-    if (
-        socket
-    ) {
-
-        socket.close();
+        localStream =
+            null;
 
     }
 
-    window.location.reload();
+
+    setTimeout(
+        function() {
+
+            window.location.reload();
+
+        },
+        150
+    );
 
 }
+
 
 // =====================================================
 // JOIN MESSAGE
@@ -4444,18 +4760,14 @@ function showJoinMessage(
     type
 ) {
 
-
     document
         .getElementById(
             "joinMessage"
         )
         .innerHTML =
-
         `
         <div class="alert alert-${type}">
-
             ${escapeHtml(message)}
-
         </div>
         `;
 
@@ -4463,13 +4775,12 @@ function showJoinMessage(
 
 
 // =====================================================
-// ESCAPE
+// ESCAPE HTML
 // =====================================================
 
 function escapeHtml(
     value
 ) {
-
 
     const div =
         document.createElement(
@@ -4485,9 +4796,7 @@ function escapeHtml(
 
 }
 
-
 </script>
-
 
 </body>
 
